@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GestaoOficinas.Application\GestaoOficinas.Application.csproj" />
+    <ProjectReference Include="..\GestaoOficinas.Infrastructure\GestaoOficinas.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
