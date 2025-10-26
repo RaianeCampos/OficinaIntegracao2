@@ -12,25 +12,43 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. Configuração do Banco de Dados (Passo 3) ---
+// --- 1. Configuração do Banco de Dados ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// --- 2. Injeção de Dependência (Serviços e Repositórios - Passo 6) ---
+// --- 2. Injeção de Dependência (Serviços e Repositórios) ---
+
+// Repositórios
 builder.Services.AddScoped<IEscolaRepository, EscolaRepository>();
+builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
+builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
+builder.Services.AddScoped<IOficinaRepository, OficinaRepository>();
+builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
+builder.Services.AddScoped<IInscricaoRepository, InscricaoRepository>();
+builder.Services.AddScoped<IChamadaRepository, ChamadaRepository>();
+// Repositório de Presença quando criar o serviço
+// builder.Services.AddScoped<IPresencaRepository, PresencaRepository>(); 
+builder.Services.AddScoped<IDocumentoRepository, DocumentoRepository>();
+
+// Serviços
 builder.Services.AddScoped<IEscolaService, EscolaService>();
+builder.Services.AddScoped<IProfessorService, ProfessorService>();
+builder.Services.AddScoped<IAlunoService, AlunoService>();
+builder.Services.AddScoped<IOficinaService, OficinaService>();
+builder.Services.AddScoped<ITurmaService, TurmaService>();
+builder.Services.AddScoped<IInscricaoService, InscricaoService>();
+builder.Services.AddScoped<IChamadaService, ChamadaService>();
+// Serviço de Presença
+// builder.Services.AddScoped<IPresencaService, PresencaService>();
+builder.Services.AddScoped<IDocumentoService, DocumentoService>();
 
-// TODO: Adicionar os outros repositórios e serviços aqui
-// builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
-// builder.Services.AddScoped<IProfessorService, ProfessorService>();
-// ... etc
 
-// --- 3. Configuração do AutoMapper (Passo 6) ---
+// --- 3. Configuração do AutoMapper  ---
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
-// --- 4. Configuração de Autenticação JWT (Passo 5) ---
+// --- 4. Configuração de Autenticação JWT ---
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
