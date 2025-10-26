@@ -112,6 +112,9 @@ A Sprint 1 foca na fundação técnica e no CRUD básico do projeto.
 - [x] Criação das classes e domínios na IDE.
 - [x] Criação da API a ser utilizada, com nomeação das chamadas (Swagger).
 - [x] Configuração da autorização (JWT).
+- [x] Criação das Interfaces (Repositórios e Serviços) para todas as entidades.
+- [x] Implementação dos Repositórios e Serviços para todas as entidades.
+- [x] Registro de todas as dependências (Injeção de Dependência) no Program.cs
 - [ ] Criação das *controllers* e funções (CRUD) para *todas* as entidades.
 - [ ] Review de backlog e correção de problemas.
 - [ ] Definição da view de Dashboard/página inicial (criação do endpoint GET /api/dashboard`).
