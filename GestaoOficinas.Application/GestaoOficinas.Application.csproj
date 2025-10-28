@@ -9,10 +9,12 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GestaoOficinas.Domain\GestaoOficinas.Domain.csproj" />
+    <ProjectReference Include="..\GestaoOficinas.Infrastructure\GestaoOficinas.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

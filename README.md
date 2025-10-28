@@ -115,10 +115,10 @@ A Sprint 1 foca na fundação técnica e no CRUD básico do projeto.
 - [x] Criação das Interfaces (Repositórios e Serviços) para todas as entidades.
 - [x] Implementação dos Repositórios e Serviços para todas as entidades.
 - [x] Registro de todas as dependências (Injeção de Dependência) no Program.cs
-- [ ] Criação das *controllers* e funções (CRUD) para *todas* as entidades.
-- [ ] Review de backlog e correção de problemas.
-- [ ] Definição da view de Dashboard/página inicial (criação do endpoint GET /api/dashboard`).
+- [x] Criação das *controllers* e funções (CRUD) para *todas* as entidades (Professor, Aluno, Oficina, Turma, Inscricao, Chamada, Documento).
+- [x] Review de backlog e correção de problemas.
+- [x] Definição da view de Dashboard/página inicial (criação do endpoint GET /api/dashboard`).
 - [ ] Entrega da primeira sprint.
-- [ ] Review da sprint.
+- [x] Review da sprint.
 - [ ] Atualização de cronograma.
 - [ ] Definição das views de cadastros (planejamento da Sprint 2).

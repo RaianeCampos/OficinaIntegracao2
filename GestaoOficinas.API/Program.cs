@@ -12,12 +12,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. Configuração do Banco de Dados ---
+// --- 1. Configuração do Banco de Dados (Passo 3) ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// --- 2. Injeção de Dependência (Serviços e Repositórios) ---
+// --- 2. Injeção de Dependência (Serviços e Repositórios - Passo 6) ---
 
 // Repositórios
 builder.Services.AddScoped<IEscolaRepository, EscolaRepository>();
@@ -27,7 +27,7 @@ builder.Services.AddScoped<IOficinaRepository, OficinaRepository>();
 builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
 builder.Services.AddScoped<IInscricaoRepository, InscricaoRepository>();
 builder.Services.AddScoped<IChamadaRepository, ChamadaRepository>();
-// Repositório de Presença quando criar o serviço
+// Repositório de Presença será necessário quando criar o serviço
 // builder.Services.AddScoped<IPresencaRepository, PresencaRepository>(); 
 builder.Services.AddScoped<IDocumentoRepository, DocumentoRepository>();
 
@@ -43,8 +43,11 @@ builder.Services.AddScoped<IChamadaService, ChamadaService>();
 // builder.Services.AddScoped<IPresencaService, PresencaService>();
 builder.Services.AddScoped<IDocumentoService, DocumentoService>();
 
+// Serviço do Dashboard
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
-// --- 3. Configuração do AutoMapper  ---
+
+// --- 3. Configuração do AutoMapper ---
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
