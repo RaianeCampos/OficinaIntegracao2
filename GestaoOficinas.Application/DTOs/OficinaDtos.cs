@@ -7,6 +7,7 @@
         public string TemaOficina { get; set; }
         public string StatusOficina { get; set; }
         public int IdProfessor { get; set; }
+        public string NomeProfessorResponsavel { get; set; }
     }
 
     public class CreateOficinaDto

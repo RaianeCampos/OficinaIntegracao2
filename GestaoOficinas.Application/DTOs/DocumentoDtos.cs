@@ -9,6 +9,7 @@
         public int IdOficina { get; set; }
         public int? IdEscola { get; set; }
         public int? IdAluno { get; set; }
+        public string NomeOficina { get; set; }
     }
 
     public class CreateDocumentoDto

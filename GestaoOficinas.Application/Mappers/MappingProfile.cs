@@ -24,28 +24,49 @@ namespace GestaoOficinas.Application.Mappers
             CreateMap<UpdateAlunoDto, Aluno>();
 
             // Oficina
-            CreateMap<Oficina, OficinaViewModel>();
+            CreateMap<Oficina, OficinaViewModel>()
+                .ForMember(dest => dest.NomeProfessorResponsavel,
+                           opt => opt.MapFrom(src => src.ProfessorResponsavel.NomeProfessor));
             CreateMap<CreateOficinaDto, Oficina>();
             CreateMap<UpdateOficinaDto, Oficina>();
 
             // Turma
-            CreateMap<Turma, TurmaViewModel>();
+            CreateMap<Turma, TurmaViewModel>()
+                .ForMember(dest => dest.NomeOficina,
+                           opt => opt.MapFrom(src => src.Oficina.NomeOficina));
             CreateMap<CreateTurmaDto, Turma>();
             CreateMap<UpdateTurmaDto, Turma>();
 
             // Inscricao
-            CreateMap<Inscricao, InscricaoViewModel>();
+            CreateMap<Inscricao, InscricaoViewModel>()
+                .ForMember(dest => dest.NomeAluno,
+                           opt => opt.MapFrom(src => src.Aluno.NomeAluno))
+                .ForMember(dest => dest.NomeTurma,
+                           opt => opt.MapFrom(src => src.Turma.NomeTurma));
             CreateMap<CreateInscricaoDto, Inscricao>();
             CreateMap<UpdateInscricaoDto, Inscricao>();
 
             // Chamada
-            CreateMap<Chamada, ChamadaViewModel>();
+            CreateMap<Chamada, ChamadaViewModel>()
+                .ForMember(dest => dest.NomeTurma,
+                           opt => opt.MapFrom(src => src.Turma.NomeTurma));
             CreateMap<CreateChamadaDto, Chamada>();
 
             // Documento
-            CreateMap<Documento, DocumentoViewModel>();
+            CreateMap<Documento, DocumentoViewModel>()
+                .ForMember(dest => dest.NomeOficina,
+                           opt => opt.MapFrom(src => src.Oficina.NomeOficina));
             CreateMap<CreateDocumentoDto, Documento>();
             CreateMap<UpdateDocumentoDto, Documento>();
+
+            // Presenca
+            CreateMap<Presenca, PresencaDto>()
+                .ForMember(dest => dest.NomeAluno,
+                           opt => opt.MapFrom(src => src.Aluno.NomeAluno));
+
+            // OficinaTutor
+            CreateMap<OficinaTutorDto, OficinaTutor>();
         }
     }
 }
+

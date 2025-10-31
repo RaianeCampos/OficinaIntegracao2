@@ -12,12 +12,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. Configuração do Banco de Dados (Passo 3) ---
+// --- 1. Configuração do Banco de Dados ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// --- 2. Injeção de Dependência (Serviços e Repositórios - Passo 6) ---
+// --- 2. Injeção de Dependência (Serviços e Repositórios) ---
 
 // Repositórios
 builder.Services.AddScoped<IEscolaRepository, EscolaRepository>();
@@ -27,9 +27,11 @@ builder.Services.AddScoped<IOficinaRepository, OficinaRepository>();
 builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
 builder.Services.AddScoped<IInscricaoRepository, InscricaoRepository>();
 builder.Services.AddScoped<IChamadaRepository, ChamadaRepository>();
-// Repositório de Presença será necessário quando criar o serviço
-// builder.Services.AddScoped<IPresencaRepository, PresencaRepository>(); 
 builder.Services.AddScoped<IDocumentoRepository, DocumentoRepository>();
+// Novos Repositórios M:N
+builder.Services.AddScoped<IPresencaRepository, PresencaRepository>();
+builder.Services.AddScoped<IOficinaTutorRepository, OficinaTutorRepository>();
+
 
 // Serviços
 builder.Services.AddScoped<IEscolaService, EscolaService>();
@@ -39,9 +41,11 @@ builder.Services.AddScoped<IOficinaService, OficinaService>();
 builder.Services.AddScoped<ITurmaService, TurmaService>();
 builder.Services.AddScoped<IInscricaoService, InscricaoService>();
 builder.Services.AddScoped<IChamadaService, ChamadaService>();
-// Serviço de Presença
-// builder.Services.AddScoped<IPresencaService, PresencaService>();
 builder.Services.AddScoped<IDocumentoService, DocumentoService>();
+// Novos Serviços M:N
+builder.Services.AddScoped<IPresencaService, PresencaService>();
+builder.Services.AddScoped<IOficinaTutorService, OficinaTutorService>();
+
 
 // Serviço do Dashboard
 builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -128,3 +132,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

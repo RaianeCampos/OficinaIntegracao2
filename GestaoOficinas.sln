@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36401.2 d17.14
+VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoOficinas.Domain", "GestaoOficinas.Domain\GestaoOficinas.Domain.csproj", "{105439C7-1BE2-400D-8BB5-5E40D1C0784D}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoOficinas.Infrastructure", "GestaoOficinas.Infrastructure\GestaoOficinas.Infrastructure.csproj", "{79166D66-E073-40E6-A4D2-3B98FC73DAFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoOficinas.API", "GestaoOficinas.API\GestaoOficinas.API.csproj", "{71AE72F8-E0DB-4BE3-A348-7EC66CEF7014}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoOficinas.API.Tests", "GestaoOficinas.API.Tests\GestaoOficinas.API.Tests.csproj", "{D3256EFA-F7A7-48A4-871E-995CF154EA89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{71AE72F8-E0DB-4BE3-A348-7EC66CEF7014}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71AE72F8-E0DB-4BE3-A348-7EC66CEF7014}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71AE72F8-E0DB-4BE3-A348-7EC66CEF7014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3256EFA-F7A7-48A4-871E-995CF154EA89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3256EFA-F7A7-48A4-871E-995CF154EA89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3256EFA-F7A7-48A4-871E-995CF154EA89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3256EFA-F7A7-48A4-871E-995CF154EA89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

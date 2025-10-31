@@ -11,6 +11,7 @@ A solução (GestaoOficinas.sln) está organizada em quatro projetos principais,
 2.  GestaoOficinas.Application: Contém a lógica de negócio (serviços), DTOs (Data Transfer Objects), validações e as interfaces dos serviços.
 3.  GestaoOficinas.Infrastructure: Implementa o acesso a dados. Contém o ApplicationDbContext (Entity Framework Core), os repositórios e a pasta Migrations.
 4.  GestaoOficinas.API: A camada de apresentação. Expõe os endpoints RESTful, contém os Controllers e lida com autenticação (JWT) e configuração (injeção de dependência).
+5.  GestaoOficinas.API.Tests: Projeto de Testes de Integração, usando xUnit e um banco de dados em memória.
 
 ## 🚀 Guia de Instalação e Execução
 
@@ -59,12 +60,12 @@ Para criar a estrutura de tabelas no banco de dados, você precisa aplicar as mi
 3.  Execute o primeiro comando para criar o arquivo de migração:
     Em powershell: 
 
-    Add-Migration InitialCreate
+    Add-Migration InitialCreate -StartupProject GestaoOficinas.API
     
 4.  Após o comando ser concluído, execute o segundo comando para aplicar a migração ao banco de dados:
     Em powershell:
 
-    Update-Database
+    Update-Database -StartupProject GestaoOficinas.API
    
 
 ### Passo 5: Executar a API
@@ -115,10 +116,24 @@ A Sprint 1 foca na fundação técnica e no CRUD básico do projeto.
 - [x] Criação das Interfaces (Repositórios e Serviços) para todas as entidades.
 - [x] Implementação dos Repositórios e Serviços para todas as entidades.
 - [x] Registro de todas as dependências (Injeção de Dependência) no Program.cs
-- [x] Criação das *controllers* e funções (CRUD) para *todas* as entidades (Professor, Aluno, Oficina, Turma, Inscricao, Chamada, Documento).
+- [x] Criação das *controllers* e funções (CRUD) para *todas* as entidades (Professor, Aluno, Oficina, Turma, Inscricao, Chamada, Documento, Presenca).
 - [x] Review de backlog e correção de problemas.
 - [x] Definição da view de Dashboard/página inicial (criação do endpoint GET /api/dashboard`).
+- [x] **Criar Testes de Integração** (Projeto `.Tests`) com exemplos para todas as entidades.
 - [ ] Entrega da primeira sprint.
-- [x] Review da sprint.
+- [ ] Review da sprint.
 - [ ] Atualização de cronograma.
+
+---
+### ✏️ Próximos Passos (Planejamento Sprint 2)
+
+O que falta implementar no projeto:
+
+- [ ] **Lógica de Negócio Avançada:**
+    - [ ] Geração do documento de `Certificado` (requer lógica de presença/conclusão).
+    - [ ] Geração do documento de `Convite` (para escolas).
+- [ ] **Validação de DTOs** (Implementar FluentValidation).
+- [ ] **Tratamento de Erros Global** (Middleware para exceções).
+- [ ] **Melhorar Testes de Integração** (Cobrir casos de falha, `PUT` e `DELETE`).
+- [ ] **Definição das Views** (Prototipação do Frontend).
 - [ ] Definição das views de cadastros (planejamento da Sprint 2).
