@@ -1,17 +1,21 @@
 
-Esta é a API backend para o sistema de Controle de Oficinas e Escolas Participantes (Projeto GestaoOficinas). O sistema visa gerenciar o cadastro de escolas, professores, alunos, oficinas e a emissão de documentos (certificados e convites).
+# Projeto Gestão de Oficinas (Repositório: OficinaIntegracao2)
 
-O projeto utiliza .NET 8 e segue os princípios da Arquitetura Limpa (Clean Architecture) para garantir separação de responsabilidades, testabilidade e manutenibilidade.
+Esta é a API backend para o sistema de **Controle de Oficinas e Escolas Participantes** (Projeto GestaoOficinas), desenvolvida como parte do projeto de integração da faculdade. O sistema visa gerenciar o cadastro de escolas, professores, alunos, oficinas e a emissão de documentos (certificados e convites).
+
+O projeto utiliza **.NET 8** e segue os princípios da **Arquitetura Limpa (Clean Architecture)** para garantir separação de responsabilidades, testabilidade e manutenibilidade.
 
 ## 🏛️ Arquitetura do Projeto
 
-A solução (GestaoOficinas.sln) está organizada em quatro projetos principais, seguindo a Arquitetura Limpa:
+A solução (`GestaoOficinas.sln`) está organizada em quatro projetos principais, seguindo a Arquitetura Limpa:
 
-1.  GestaoOficinas.Domain: O núcleo do sistema. Contém as entidades de negócio puras (ex: Escola, Aluno, Oficina) e as interfaces dos repositórios (ex: IEscolaRepository).
-2.  GestaoOficinas.Application: Contém a lógica de negócio (serviços), DTOs (Data Transfer Objects), validações e as interfaces dos serviços.
-3.  GestaoOficinas.Infrastructure: Implementa o acesso a dados. Contém o ApplicationDbContext (Entity Framework Core), os repositórios e a pasta Migrations.
-4.  GestaoOficinas.API: A camada de apresentação. Expõe os endpoints RESTful, contém os Controllers e lida com autenticação (JWT) e configuração (injeção de dependência).
-5.  GestaoOficinas.API.Tests: Projeto de Testes de Integração, usando xUnit e um banco de dados em memória.
+1.  **`GestaoOficinas.Domain`**: O núcleo do sistema. Contém as entidades de negócio puras (ex: `Escola`, `Aluno`, `Oficina`) e as interfaces dos repositórios (ex: `IEscolaRepository`).
+2.  **`GestaoOficinas.Application`**: Contém a lógica de negócio (serviços), DTOs (Data Transfer Objects), validações e as interfaces dos serviços.
+3.  **`GestaoOficinas.Infrastructure`**: Implementa o acesso a dados. Contém o `ApplicationDbContext` (Entity Framework Core), os repositórios e a pasta `Migrations`.
+4.  **`GestaoOficinas.API`**: A camada de apresentação. Expõe os *endpoints* RESTful, contém os `Controllers` e lida com autenticação (JWT) e configuração (injeção de dependência).
+5.  **`GestaoOficinas.API.Tests`**: Projeto de Testes de Integração, usando xUnit e um banco de dados em memória.
+
+---
 
 ## 🚀 Guia de Instalação e Execução
 
@@ -21,52 +25,43 @@ Siga estes passos para configurar e executar o projeto localmente.
 
 Certifique-se de ter as seguintes ferramentas instaladas:
 
-* [.NET 8 SDK](https://dotnet.microsoft.com/pt-br/download/dotnet/8.0)**
-* Visual Studio 2022 (ou sua IDE .NET de preferência)
-* PostgreSQL (ou o SGBD de sua escolha, como SQL Server)
-    * O projeto está configurado para usar PostgreSQL.
+* **[.NET 8 SDK](https://dotnet.microsoft.com/pt-br/download/dotnet/8.0)**
+* **Visual Studio 2022** (ou sua IDE .NET de preferência)
+* **PostgreSQL** (ou o SGBD de sua escolha, como SQL Server)
+    * *O projeto está configurado para usar PostgreSQL.*
 
 ### Passo 2: Configurar o Banco de Dados
 
-1.  Crie um banco de dados vazio no seu servidor PostgreSQL (ex: gestao_oficinas_db).
-2.  Abra o arquivo appsettings.json no projeto GestaoOficinas.API.
-3.  Ajuste a ConnectionStrings para apontar para o seu banco de dados local:
+1.  Crie um banco de dados vazio no seu servidor PostgreSQL (ex: `gestao_oficinas_db`).
+2.  Abra o arquivo `appsettings.json` no projeto **`GestaoOficinas.API`**.
+3.  Ajuste a `ConnectionStrings` para apontar para o seu banco de dados local. **(Nota: Use o Gerenciador de Segredos do Usuário para sua senha!)**
 
-    
+    ```json
     {
       "ConnectionStrings": {
-        "DefaultConnection": "Server=localhost;Port=5432;Database=gestao_oficinas_db;User Id=postgres;Password=SUA_SENHA_AQUI;"
+        "DefaultConnection": "Server=localhost;Port=5432;Database=gestao_oficinas_db;User Id=postgres;Password="
       },
-      "Jwt": {
-        "Key": "SUA_CHAVE_SECRETA_MUITO_LONGA_E_SEGURA_AQUI",
-        "Issuer": "https://localhost:7001",
-        "Audience": "https://localhost:7001"
-      }
       // ...
     }
-
+    ```
 
 ### Passo 3: Configurar o Projeto e as Dependências
 
-1.  Abra a solução GestaoOficinas.sln no Visual Studio 2022.
-2.  Clique com o botão direito na Solução (no Gerenciador de Soluções) e selecione "Restaurar Pacotes NuGet" (Restore NuGet Packages). Isso irá baixar todas as dependências (EF Core, Npgsql, AutoMapper, etc.).
+1.  Abra a solução **`GestaoOficinas.sln`** no Visual Studio 2022.
+2.  Clique com o botão direito na Solução (no Gerenciador de Soluções) e selecione **"Restaurar Pacotes NuGet"** (Restore NuGet Packages).
 
 ### Passo 4: Executar as Migrações do Banco de Dados
 
-Para criar a estrutura de tabelas no banco de dados, você precisa aplicar as migrações do Entity Framework.
-
-1.  No Visual Studio, clique em: Exibir > Outras Janelas > Console do Gerenciador de Pacotes.
-2.  No console, certifique-se de que o "Projeto Padrão" (Default project) esteja selecionado como GestaoOficinas.Infrastructure.
-3.  Execute o primeiro comando para criar o arquivo de migração:
-    Em powershell: 
-
+1.  No Visual Studio, vá em **Exibir > Outras Janelas > Console do Gerenciador de Pacotes**.
+2.  No console, certifique-se de que o **"Projeto Padrão"** (Default project) esteja selecionado como **`GestaoOficinas.Infrastructure`**.
+3.  Execute o primeiro comando para criar o arquivo de migração (se ainda não existir):
+    ```powershell
     Add-Migration InitialCreate -StartupProject GestaoOficinas.API
-    
-4.  Após o comando ser concluído, execute o segundo comando para aplicar a migração ao banco de dados:
-    Em powershell:
-
+    ```
+4.  Execute o segundo comando para aplicar a migração ao banco de dados:
+    ```powershell
     Update-Database -StartupProject GestaoOficinas.API
-   
+    ``` 
 
 ### Passo 5: Executar a API
 
