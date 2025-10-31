@@ -1,7 +1,7 @@
 
 # Projeto Gestão de Oficinas (Repositório: OficinaIntegracao2)
 
-Esta é a API backend para o sistema de **Controle de Oficinas e Escolas Participantes** (Projeto GestaoOficinas), desenvolvida como parte do projeto de integração da faculdade. O sistema visa gerenciar o cadastro de escolas, professores, alunos, oficinas e a emissão de documentos (certificados e convites).
+Esta é a API backend para o sistema de **Controle de Oficinas e Escolas Participantes** (Projeto GestaoOficinas). O sistema visa gerenciar o cadastro de escolas, professores, alunos, oficinas e a emissão de documentos (certificados e convites).
 
 O projeto utiliza **.NET 8** e segue os princípios da **Arquitetura Limpa (Clean Architecture)** para garantir separação de responsabilidades, testabilidade e manutenibilidade.
 
