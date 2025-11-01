@@ -2,13 +2,19 @@
 using GestaoOficinas.Domain.Interfaces;
 using GestaoOficinas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoOficinas.Infrastructure.Repositories
 {
     public class OficinaRepository : IOficinaRepository
     {
         private readonly ApplicationDbContext _context;
-        public OficinaRepository(ApplicationDbContext context) { _context = context; }
+
+        public OficinaRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task AddAsync(Oficina oficina)
         {
@@ -28,12 +34,17 @@ namespace GestaoOficinas.Infrastructure.Repositories
 
         public async Task<IEnumerable<Oficina>> GetAllAsync()
         {
-            return await _context.Oficinas.AsNoTracking().ToListAsync();
+            return await _context.Oficinas
+                .Include(o => o.ProfessorResponsavel)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Oficina> GetByIdAsync(int id)
         {
-            return await _context.Oficinas.FindAsync(id);
+            return await _context.Oficinas
+                .Include(o => o.ProfessorResponsavel)
+                .FirstOrDefaultAsync(o => o.IdOficina == id);
         }
 
         public async Task UpdateAsync(Oficina oficina)
@@ -43,3 +54,4 @@ namespace GestaoOficinas.Infrastructure.Repositories
         }
     }
 }
+

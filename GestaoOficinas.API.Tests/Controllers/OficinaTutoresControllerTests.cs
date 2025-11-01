@@ -3,6 +3,7 @@ using GestaoOficinas.Application.DTOs;
 using GestaoOficinas.Domain.Entities;
 using GestaoOficinas.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -29,10 +30,56 @@ namespace GestaoOficinas.API.Tests.Controllers
             using var scope = _factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var escola = new Escola { IdEscola = 1, NomeEscola = "Escola", CnpjEscola = "123" };
-            var profResponsavel = new Professor { IdProfessor = 1, NomeProfessor = "Prof. Resp.", IdEscola = 1, Escola = escola };
-            var profTutor = new Professor { IdProfessor = 2, NomeProfessor = "Prof. Tutor", IdEscola = 1, Escola = escola };
-            var oficina = new Oficina { IdOficina = 1, NomeOficina = "Oficina", IdProfessor = 1, ProfessorResponsavel = profResponsavel };
+            var escola = new Escola
+            {
+                IdEscola = 1,
+                NomeEscola = "Escola Padrão",
+                CnpjEscola = "12345678901234",
+                CepEscola = "01001-000",
+                RuaEscola = "Rua Teste, 123",
+                ComplementoEscola = "Sala 1",
+                TelefoneEscola = "11999999999",
+                EmailEscola = "escola@teste.com"
+            };
+
+            var profResponsavel = new Professor
+            {
+                IdProfessor = 1,
+                NomeProfessor = "Prof. Resp.",
+                IdEscola = 1,
+                Escola = escola,
+                EmailProfessor = "prof@teste.com",
+                TelefoneProfessor = "11988887777",
+                ConhecimentoProfessor = "C#, Java",
+                Representante = false,
+                CargoProfessor = "Docente"
+            };
+
+            var profTutor = new Professor
+            {
+                IdProfessor = 2,
+                NomeProfessor = "Prof. Tutor",
+                IdEscola = 1,
+                Escola = escola,
+                EmailProfessor = "tutor@teste.com",
+                TelefoneProfessor = "11988886666",
+                ConhecimentoProfessor = "Python",
+                Representante = false,
+                CargoProfessor = "Tutor"
+            };
+
+            var oficina = new Oficina
+            {
+                IdOficina = 1,
+                NomeOficina = "Oficina",
+                IdProfessor = 1,
+                ProfessorResponsavel = profResponsavel,
+                TemaOficina = "Testes",
+                CargaHorariaOficinia = 10,
+                DataOficina = DateTime.Now,
+                DescricaoOficina = "Desc",
+                StatusOficina = "Ativa"
+            };
 
             await context.AddRangeAsync(escola, profResponsavel, profTutor, oficina);
             await context.SaveChangesAsync();
@@ -42,6 +89,7 @@ namespace GestaoOficinas.API.Tests.Controllers
         [Fact]
         public async Task Post_AdicionarTutor_RetornaOk()
         {
+            // Arrange
             var (oficina, tutor) = await SeedOficinaEProfessorTutorAsync();
             var dto = new OficinaTutorDto
             {
@@ -49,11 +97,12 @@ namespace GestaoOficinas.API.Tests.Controllers
                 IdProfessor = tutor.IdProfessor
             };
 
+            // Act
             var response = await _client.PostAsJsonAsync("/api/oficinatutores", dto);
 
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            // Verificação bônus: checar se foi salvo no banco
             using var scope = _factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var relacao = await context.OficinaTutores.FindAsync(oficina.IdOficina, tutor.IdProfessor);

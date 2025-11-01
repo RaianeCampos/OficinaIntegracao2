@@ -2,13 +2,19 @@
 using GestaoOficinas.Domain.Interfaces;
 using GestaoOficinas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoOficinas.Infrastructure.Repositories
 {
     public class TurmaRepository : ITurmaRepository
     {
         private readonly ApplicationDbContext _context;
-        public TurmaRepository(ApplicationDbContext context) { _context = context; }
+
+        public TurmaRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task AddAsync(Turma turma)
         {
@@ -28,12 +34,17 @@ namespace GestaoOficinas.Infrastructure.Repositories
 
         public async Task<IEnumerable<Turma>> GetAllAsync()
         {
-            return await _context.Turmas.AsNoTracking().ToListAsync();
+            return await _context.Turmas
+                .Include(t => t.Oficina)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Turma> GetByIdAsync(int id)
         {
-            return await _context.Turmas.FindAsync(id);
+            return await _context.Turmas
+                .Include(t => t.Oficina)
+                .FirstOrDefaultAsync(t => t.IdTurma == id);
         }
 
         public async Task UpdateAsync(Turma turma)

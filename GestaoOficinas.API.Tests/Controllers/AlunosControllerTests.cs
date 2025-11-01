@@ -29,34 +29,89 @@ namespace GestaoOficinas.API.Tests.Controllers
         {
             using var scope = _factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var escola = new Escola { IdEscola = 1, NomeEscola = "Escola", CnpjEscola = "123" };
-            var professor = new Professor { IdProfessor = 1, NomeProfessor = "Prof.", IdEscola = 1, Escola = escola };
-            var oficina = new Oficina { IdOficina = 1, NomeOficina = "Oficina", IdProfessor = 1, ProfessorResponsavel = professor };
-            var turma = new Turma { IdTurma = 1, NomeTurma = "Turma A", IdOficina = 1, Oficina = oficina };
 
+            // 1. Criar Escola COMPLETA
+            var escola = new Escola
+            {
+                IdEscola = 1,
+                NomeEscola = "Escola Padrão",
+                CnpjEscola = "12345678901234",
+                CepEscola = "01001-000",
+                RuaEscola = "Rua Teste, 123",
+                ComplementoEscola = "Sala 1",
+                TelefoneEscola = "11999999999",
+                EmailEscola = "escola@teste.com"
+            };
+
+            // 2. Criar Professor COMPLETO
+            var professor = new Professor
+            {
+                IdProfessor = 1,
+                NomeProfessor = "Prof.",
+                IdEscola = 1,
+                Escola = escola,
+                EmailProfessor = "prof@teste.com",
+                TelefoneProfessor = "11988888888",
+                CargoProfessor = "Docente",
+                Representante = false,
+                ConhecimentoProfessor = "Testes"
+            };
+
+            // 3. Criar Oficina
+            var oficina = new Oficina
+            {
+                IdOficina = 1,
+                NomeOficina = "Oficina",
+                IdProfessor = 1,
+                ProfessorResponsavel = professor,
+                TemaOficina = "Testes",
+                CargaHorariaOficinia = 10,
+                DataOficina = DateTime.Now,
+                DescricaoOficina = "Desc",
+                StatusOficina = "Ativa"
+            };
+
+            // 4. Criar Turma
+            var turma = new Turma
+            {
+                IdTurma = 1,
+                NomeTurma = "Turma A",
+                IdOficina = 1,
+                Oficina = oficina,
+                PeriodoTurma = "Manhã",
+                SemestreTurma = "2025.1"
+            };
+
+            // Adicionar todos ao contexto
             await context.Escolas.AddAsync(escola);
             await context.Professores.AddAsync(professor);
             await context.Oficinas.AddAsync(oficina);
             await context.Turmas.AddAsync(turma);
-            await context.SaveChangesAsync();
+
+            // Salvar
+            await context.SaveChangesAsync(); 
             return turma;
         }
 
         [Fact]
         public async Task Post_CriaNovoAluno_RetornaCreated()
         {
-            var turma = await SeedTurmaAsync();
+            // Arrange
+            var turma = await SeedTurmaAsync(); 
             var novoAluno = new CreateAlunoDto
             {
                 NomeAluno = "Aluno Teste",
                 EmailAluno = "aluno@teste.com",
                 RaAluno = "123456",
                 NascimentoAluno = DateTime.Now.AddYears(-18),
+                TelefoneAluno = "11777777777",
                 IdTurma = turma.IdTurma
             };
 
+            // Act
             var response = await _client.PostAsJsonAsync("/api/alunos", novoAluno);
 
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             var viewModel = await response.Content.ReadFromJsonAsync<AlunoViewModel>();
             viewModel.NomeAluno.Should().Be("Aluno Teste");

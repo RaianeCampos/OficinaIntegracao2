@@ -29,10 +29,54 @@ namespace GestaoOficinas.API.Tests.Controllers
         {
             using var scope = _factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var escola = new Escola { IdEscola = 1, NomeEscola = "Escola", CnpjEscola = "123" };
-            var professor = new Professor { IdProfessor = 1, NomeProfessor = "Prof.", IdEscola = 1, Escola = escola };
-            var oficina = new Oficina { IdOficina = 1, NomeOficina = "Oficina", IdProfessor = 1, ProfessorResponsavel = professor };
-            var turma = new Turma { IdTurma = 1, NomeTurma = "Turma A", IdOficina = 1, Oficina = oficina };
+
+            var escola = new Escola
+            {
+                IdEscola = 1,
+                NomeEscola = "Escola Padrão",
+                CnpjEscola = "12345678901234",
+                CepEscola = "01001-000",
+                RuaEscola = "Rua Teste, 123",
+                ComplementoEscola = "Sala 1",
+                TelefoneEscola = "11999999999",
+                EmailEscola = "escola@teste.com"
+            };
+
+            var professor = new Professor
+            {
+                IdProfessor = 1,
+                NomeProfessor = "Prof.",
+                IdEscola = 1,
+                Escola = escola,
+                EmailProfessor = "prof@teste.com",
+                TelefoneProfessor = "11988887777",
+                ConhecimentoProfessor = "C#, Java",
+                Representante = false,
+                CargoProfessor = "Docente"
+            };
+
+            var oficina = new Oficina
+            {
+                IdOficina = 1,
+                NomeOficina = "Oficina",
+                IdProfessor = 1,
+                ProfessorResponsavel = professor,
+                TemaOficina = "Testes",
+                CargaHorariaOficinia = 10,
+                DataOficina = DateTime.Now,
+                DescricaoOficina = "Desc",
+                StatusOficina = "Ativa"
+            };
+
+            var turma = new Turma
+            {
+                IdTurma = 1,
+                NomeTurma = "Turma A",
+                IdOficina = 1,
+                Oficina = oficina,
+                PeriodoTurma = "Manhã",
+                SemestreTurma = "2025.1"
+            };
 
             await context.AddRangeAsync(escola, professor, oficina, turma);
             await context.SaveChangesAsync();
@@ -42,6 +86,7 @@ namespace GestaoOficinas.API.Tests.Controllers
         [Fact]
         public async Task Post_CriaNovaChamada_RetornaCreated()
         {
+            // Arrange
             var turma = await SeedTurmaAsync();
             var novaChamada = new CreateChamadaDto
             {
@@ -49,8 +94,10 @@ namespace GestaoOficinas.API.Tests.Controllers
                 IdTurma = turma.IdTurma
             };
 
+            // Act
             var response = await _client.PostAsJsonAsync("/api/chamadas", novaChamada);
 
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             var viewModel = await response.Content.ReadFromJsonAsync<ChamadaViewModel>();
             viewModel.NomeTurma.Should().Be("Turma A");

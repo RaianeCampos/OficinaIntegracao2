@@ -2,13 +2,19 @@
 using GestaoOficinas.Domain.Interfaces;
 using GestaoOficinas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoOficinas.Infrastructure.Repositories
 {
     public class DocumentoRepository : IDocumentoRepository
     {
         private readonly ApplicationDbContext _context;
-        public DocumentoRepository(ApplicationDbContext context) { _context = context; }
+
+        public DocumentoRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task AddAsync(Documento documento)
         {
@@ -28,12 +34,17 @@ namespace GestaoOficinas.Infrastructure.Repositories
 
         public async Task<IEnumerable<Documento>> GetAllAsync()
         {
-            return await _context.Documentos.AsNoTracking().ToListAsync();
+            return await _context.Documentos
+                .Include(d => d.Oficina)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Documento> GetByIdAsync(int id)
         {
-            return await _context.Documentos.FindAsync(id);
+            return await _context.Documentos
+                .Include(d => d.Oficina)
+                .FirstOrDefaultAsync(d => d.IdDocumento == id);
         }
 
         public async Task UpdateAsync(Documento documento)

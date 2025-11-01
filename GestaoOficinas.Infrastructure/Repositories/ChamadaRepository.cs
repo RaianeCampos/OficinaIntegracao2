@@ -2,13 +2,19 @@
 using GestaoOficinas.Domain.Interfaces;
 using GestaoOficinas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoOficinas.Infrastructure.Repositories
 {
     public class ChamadaRepository : IChamadaRepository
     {
         private readonly ApplicationDbContext _context;
-        public ChamadaRepository(ApplicationDbContext context) { _context = context; }
+
+        public ChamadaRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task AddAsync(Chamada chamada)
         {
@@ -28,12 +34,17 @@ namespace GestaoOficinas.Infrastructure.Repositories
 
         public async Task<IEnumerable<Chamada>> GetAllAsync()
         {
-            return await _context.Chamadas.AsNoTracking().ToListAsync();
+            return await _context.Chamadas
+                .Include(c => c.Turma)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Chamada> GetByIdAsync(int id)
         {
-            return await _context.Chamadas.FindAsync(id);
+            return await _context.Chamadas
+                .Include(c => c.Turma)
+                .FirstOrDefaultAsync(c => c.IdChamada == id);
         }
 
         public async Task UpdateAsync(Chamada chamada)

@@ -29,8 +29,31 @@ namespace GestaoOficinas.API.Tests.Controllers
         {
             using var scope = _factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var escola = new Escola { IdEscola = 1, NomeEscola = "Escola Padrão", CnpjEscola = "123" };
-            var professor = new Professor { IdProfessor = 1, NomeProfessor = "Prof. Responsável", IdEscola = 1, Escola = escola };
+
+            var escola = new Escola
+            {
+                IdEscola = 1,
+                NomeEscola = "Escola Padrão",
+                CnpjEscola = "12345678901234",
+                CepEscola = "01001-000",
+                RuaEscola = "Rua Teste, 123",
+                ComplementoEscola = "Sala 1",
+                TelefoneEscola = "11999999999",
+                EmailEscola = "escola@teste.com"
+            };
+
+            var professor = new Professor
+            {
+                IdProfessor = 1,
+                NomeProfessor = "Prof. Responsável",
+                IdEscola = 1,
+                Escola = escola,
+                EmailProfessor = "prof@teste.com",
+                TelefoneProfessor = "11988887777",
+                ConhecimentoProfessor = "C#, Java",
+                Representante = false,
+                CargoProfessor = "Docente"
+            };
 
             await context.Escolas.AddAsync(escola);
             await context.Professores.AddAsync(professor);
@@ -41,22 +64,23 @@ namespace GestaoOficinas.API.Tests.Controllers
         [Fact]
         public async Task Post_CriaNovaOficina_RetornaCreated()
         {
-            
+            // Arrange
             var professor = await SeedProfessorAsync();
             var novaOficina = new CreateOficinaDto
             {
                 NomeOficina = "Oficina de Testes",
                 TemaOficina = "Testes",
+                DescricaoOficina = "Desc",
                 CargaHorariaOficinia = 10,
                 DataOficina = DateTime.Now,
                 IdProfessor = professor.IdProfessor,
                 StatusOficina = "Em Andamento"
             };
 
-            
+            // Act
             var response = await _client.PostAsJsonAsync("/api/oficinas", novaOficina);
 
-            
+            // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             var viewModel = await response.Content.ReadFromJsonAsync<OficinaViewModel>();
             viewModel.NomeOficina.Should().Be("Oficina de Testes");

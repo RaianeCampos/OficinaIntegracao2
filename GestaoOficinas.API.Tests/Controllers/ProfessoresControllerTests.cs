@@ -16,35 +16,71 @@ namespace GestaoOficinas.API.Tests.Controllers
     {
         private readonly HttpClient _client;
         private readonly CustomWebApplicationFactory<Program> _factory;
+        private readonly IServiceScope _scope;
+        private readonly ApplicationDbContext _context;
 
         public ProfessoresControllerTests(CustomWebApplicationFactory<Program> factory)
         {
             _factory = factory;
             _client = factory.CreateClient();
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("TestScheme");
+
+           
+            _scope = _factory.Services.CreateScope();
+            _context = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         }
 
+      
+        private async Task CleanDatabaseAsync()
+        {
+            
+            _context.Professores.RemoveRange(_context.Professores);
+            _context.Escolas.RemoveRange(_context.Escolas);
+            await _context.SaveChangesAsync();
+        }
+
+       
         private async Task<Escola> SeedEscolaAsync()
         {
-            using var scope = _factory.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var escola = new Escola { IdEscola = 1, NomeEscola = "Escola Padrão", CnpjEscola = "123" };
-            await context.Escolas.AddAsync(escola);
-            await context.SaveChangesAsync();
+            
+            var escola = await _context.Escolas.FindAsync(1);
+            if (escola == null)
+            {
+                
+                escola = new Escola
+                {
+                    IdEscola = 1,
+                    NomeEscola = "Escola Padrão",
+                    CnpjEscola = "12345678901234",
+                    CepEscola = "01001-000",
+                    RuaEscola = "Rua Teste, 123",
+                    ComplementoEscola = "Sala 1",
+                    TelefoneEscola = "11999999999",
+                    EmailEscola = "escola@teste.com"
+                };
+                await _context.Escolas.AddAsync(escola);
+                await _context.SaveChangesAsync();
+            }
+            
             return escola;
         }
 
         [Fact]
         public async Task Post_CriaNovoProfessor_RetornaCreated()
         {
-            var escola = await SeedEscolaAsync();
+            // Arrange
+            await CleanDatabaseAsync(); 
+            var escola = await SeedEscolaAsync(); 
+
             var novoProfessor = new CreateProfessorDto
             {
                 NomeProfessor = "Prof. Teste",
                 EmailProfessor = "prof@teste.com",
-                IdEscola = escola.IdEscola,
+                TelefoneProfessor = "11988888888", 
+                ConhecimentoProfessor = "Teste", 
+                Representante = false,
                 CargoProfessor = "Docente",
-                Representante = false
+                IdEscola = escola.IdEscola
             };
 
             var response = await _client.PostAsJsonAsync("/api/professores", novoProfessor);
@@ -57,15 +93,25 @@ namespace GestaoOficinas.API.Tests.Controllers
         [Fact]
         public async Task GetById_RetornaProfessor_QuandoProfessorExiste()
         {
-            var escola = await SeedEscolaAsync();
-            var professor = new Professor { IdProfessor = 1, NomeProfessor = "Prof. Teste", IdEscola = escola.IdEscola };
+            // Arrange
+            await CleanDatabaseAsync(); 
+            var escola = await SeedEscolaAsync(); 
 
-            using (var scope = _factory.Services.CreateScope())
+            var professor = new Professor
             {
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                await context.Professores.AddAsync(professor);
-                await context.SaveChangesAsync();
-            }
+                IdProfessor = 1,
+                NomeProfessor = "Prof. Teste",
+                IdEscola = escola.IdEscola,
+                EmailProfessor = "prof@teste.com",
+                TelefoneProfessor = "11988888888", 
+                ConhecimentoProfessor = "Teste", 
+                Representante = false,
+                CargoProfessor = "Docente"
+            };
+
+            await _context.Professores.AddAsync(professor);
+            await _context.SaveChangesAsync();
+
 
             var response = await _client.GetAsync("/api/professores/1");
 
@@ -75,3 +121,4 @@ namespace GestaoOficinas.API.Tests.Controllers
         }
     }
 }
+
