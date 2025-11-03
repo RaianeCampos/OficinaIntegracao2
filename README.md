@@ -5,7 +5,7 @@ Esta é a API backend para o sistema de **Controle de Oficinas e Escolas Partici
 
 O projeto utiliza **.NET 8** e segue os princípios da **Arquitetura Limpa (Clean Architecture)** para garantir separação de responsabilidades, testabilidade e manutenibilidade.
 
-## 🏛️ Arquitetura do Projeto
+## Arquitetura do Projeto
 
 A solução (`GestaoOficinas.sln`) está organizada em quatro projetos principais, seguindo a Arquitetura Limpa:
 
@@ -17,7 +17,7 @@ A solução (`GestaoOficinas.sln`) está organizada em quatro projetos principai
 
 ---
 
-## 🚀 Guia de Instalação e Execução
+## Guia de Instalação e Execução
 
 Siga estes passos para configurar e executar o projeto localmente.
 
@@ -70,7 +70,7 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 3.  Pressione F5 ou clique no botão de "Play" (com o perfil `https:`) para iniciar a aplicação.
 4.  O navegador será aberto com a interface do Swagger (/swagger), onde você pode testar todos os *endpoints* da API.
 
-## 🎯 Requisitos do Projeto
+## Requisitos do Projeto
 
 O sistema foi solicitado para gerenciar dois módulos principais:
 
@@ -84,7 +84,7 @@ O sistema foi solicitado para gerenciar dois módulos principais:
 * Emissão de carta convite ou convênio para participação.
 * Controle dos alunos atendidos por cada escola.
 
-## 🗃️ Modelo de Dados (Entidades)
+## Modelo de Dados (Entidades)
 
 O banco de dados foi modelado com base nas seguintes entidades:
 
@@ -120,7 +120,7 @@ A Sprint 1 foca na fundação técnica e no CRUD básico do projeto.
 - [ ] Atualização de cronograma.
 
 ---
-### ✏️ Próximos Passos (Planejamento Sprint 2)
+### Próximos Passos (Planejamento Sprint 2)
 
 O que falta implementar no projeto:
 
