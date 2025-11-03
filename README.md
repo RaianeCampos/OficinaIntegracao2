@@ -98,7 +98,7 @@ O banco de dados foi modelado com base nas seguintes entidades:
 * Presenca: Tabela de relacionamento (M:N) entre Aluno e Chamada.
 * Documento: Armazena certificados e cartas de convite/convênio.
 
-## 🏁 Objetivos da Sprint 1
+## Objetivos da Sprint 1
 
 A Sprint 1 foca na fundação técnica e no CRUD básico do projeto.
 
