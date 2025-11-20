@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GestãoOficinas</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="layout-wrapper">
+        
+        <nav id="layout-menu">
+            <div class="menu-header">
+                <i class="fa-solid fa-graduation-cap me-2"></i> GestãoOficinas
+            </div>
+            <ul class="list-unstyled mt-3">
+                <li><a asp-controller="Dashboard" asp-action="Index"><i class="fa-solid fa-chart-line me-2"></i> Dashboard</a></li>
+
+                <!-- Cadastros -->
+                <li><span class="text-muted ms-3 small text-uppercase">Gestão</span></li>
+                <li><a asp-controller="Escolas" asp-action="Index"><i class="fa-solid fa-school me-2"></i> Escolas</a></li>
+                <li><a asp-controller="Professores" asp-action="Index"><i class="fa-solid fa-chalkboard-user me-2"></i> Professores</a></li>
+                <li><a asp-controller="Alunos" asp-action="Index"><i class="fa-solid fa-user-graduate me-2"></i> Alunos</a></li>
+
+                <!-- Acadêmico -->
+                <li><span class="text-muted ms-3 small text-uppercase">Acadêmico</span></li>
+                <li><a asp-controller="Oficinas" asp-action="Index"><i class="fa-solid fa-shapes me-2"></i> Oficinas</a></li>
+                <li><a asp-controller="Turmas" asp-action="Index"><i class="fa-solid fa-users me-2"></i> Turmas</a></li>
+                <li><a asp-controller="Chamadas" asp-action="Index"><i class="fa-solid fa-calendar-check me-2"></i> Chamadas</a></li>
+                <li><a asp-controller="Documentos" asp-action="Index"><i class="fa-solid fa-file-contract me-2"></i> Documentos</a></li>
+            </ul>
+        </nav>
+
+        <div class="layout-page w-100 d-flex flex-column">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom p-3">
+                <button class="btn" type="button" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="ms-3">Bem vindo(a) ao Gestão de Oficinas 👋</div>
+            </nav>
+
+            <div class="content-wrapper">
+                <main role="main" class="container-fluid">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            document.body.classList.toggle('sidebar-collapsed');
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

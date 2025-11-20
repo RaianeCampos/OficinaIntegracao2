@@ -1,0 +1,45 @@
+﻿@model GestaoOficinas.Application.DTOs.DashboardDto
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-primary">Visão Geral</h2>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card text-white" style="background-color: var(--prussian-blue);">
+            <div class="card-body">
+                <h5 class="card-title">Escolas</h5>
+                <p class="card-text display-6">@Model.TotalEscolas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white" style="background-color: var(--sapphire-blue);">
+            <div class="card-body">
+                <h5 class="card-title">Alunos</h5>
+                <p class="card-text display-6">@Model.TotalAlunos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white" style="background-color: var(--celadon-blue);">
+            <div class="card-body">
+                <h5 class="card-title">Professores</h5>
+                <p class="card-text display-6">@Model.TotalProfessores</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white" style="background-color: var(--carolina-blue);">
+            <div class="card-body">
+                <h5 class="card-title">Oficinas Ativas</h5>
+                <p class="card-text display-6">@Model.TotalOficinasEmAndamento</p>
+            </div>
+        </div>
+    </div>
+</div>

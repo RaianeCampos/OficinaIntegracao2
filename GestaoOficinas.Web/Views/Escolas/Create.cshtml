@@ -1,0 +1,109 @@
+﻿@model GestaoOficinas.Application.DTOs.CreateEscolaDto
+
+@{
+    ViewData["Title"] = "Nova Escola";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary"><i class="fa-solid fa-school me-2"></i>Nova Escola</h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 text-muted">Informações da Escola</h5>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Dados Básicos</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="NomeEscola" class="form-label">Nome da Escola <span class="text-danger">*</span></label>
+                        <input asp-for="NomeEscola" class="form-control" placeholder="Ex: Escola Estadual Modelo" />
+                        <span asp-validation-for="NomeEscola" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="CnpjEscola" class="form-label">CNPJ <span class="text-danger">*</span></label>
+                        <input asp-for="CnpjEscola" class="form-control" placeholder="00.000.000/0000-00" id="cnpj" />
+                        <span asp-validation-for="CnpjEscola" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EmailEscola" class="form-label">E-mail <span class="text-danger">*</span></label>
+                        <input asp-for="EmailEscola" class="form-control" type="email" placeholder="contato@escola.com" />
+                        <span asp-validation-for="EmailEscola" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="TelefoneEscola" class="form-label">Telefone</label>
+                        <input asp-for="TelefoneEscola" class="form-control" placeholder="(00) 00000-0000" id="telefone" />
+                        <span asp-validation-for="TelefoneEscola" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4 border-light" />
+
+                <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Endereço</h6>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="CepEscola" class="form-label">CEP</label>
+                        <input asp-for="CepEscola" class="form-control" placeholder="00000-000" id="cep" />
+                        <span asp-validation-for="CepEscola" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        <label asp-for="RuaEscola" class="form-label">Rua / Logradouro</label>
+                        <input asp-for="RuaEscola" class="form-control" placeholder="Rua das Flores, 123" />
+                        <span asp-validation-for="RuaEscola" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="ComplementoEscola" class="form-label">Complemento</label>
+                        <input asp-for="ComplementoEscola" class="form-control" placeholder="Bloco A, Sala 2, Próximo ao mercado..." />
+                        <span asp-validation-for="ComplementoEscola" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Voltar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-save me-1"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/jquery.mask.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('#cep').mask('00000-000');
+
+            $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
+
+            var SPMaskBehavior = function (val) {
+              return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+            },
+            spOptions = {
+              onKeyPress: function(val, e, field, options) {
+                  field.mask(SPMaskBehavior.apply({}, arguments), options);
+                }
+            };
+
+            $('#telefone').mask(SPMaskBehavior, spOptions);
+        });
+    </script>
+}

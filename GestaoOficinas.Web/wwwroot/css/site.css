@@ -1,0 +1,76 @@
+:root {
+    --prussian-blue: #13293D;
+    --sapphire-blue: #006494;
+    --celadon-blue: #247BA0;
+    --carolina-blue: #1B98E0;
+    --azure-white: #E8F1F2;
+}
+
+body {
+    background-color: var(--azure-white);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--prussian-blue);
+}
+
+.layout-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+#layout-menu {
+    background-color: var(--prussian-blue);
+    color: white;
+    width: 260px;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+    #layout-menu a {
+        color: var(--azure-white);
+        text-decoration: none;
+        padding: 15px;
+        display: block;
+    }
+
+        #layout-menu a:hover {
+            background-color: var(--sapphire-blue);
+        }
+
+    #layout-menu .menu-header {
+        font-weight: bold;
+        padding: 20px;
+        font-size: 1.2rem;
+        background: var(--sapphire-blue);
+    }
+
+.sidebar-collapsed #layout-menu {
+    width: 0;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px 0 0 0;
+}
+
+.btn-primary {
+    background-color: var(--celadon-blue);
+    border-color: var(--celadon-blue);
+}
+
+    .btn-primary:hover {
+        background-color: var(--sapphire-blue);
+    }
+
+.btn-info {
+    background-color: var(--carolina-blue);
+    color: white;
+}
+
+.table thead {
+    background-color: var(--prussian-blue);
+    color: white;
+}

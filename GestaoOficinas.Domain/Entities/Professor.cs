@@ -12,6 +12,7 @@ namespace GestaoOficinas.Domain.Entities
         public string ConhecimentoProfessor { get; set; } 
         public bool Representante { get; set; }
         public string CargoProfessor { get; set; }
+        public bool Administrador { get; set; }
         public int IdEscola { get; set; }
         public virtual Escola Escola { get; set; }
         public virtual ICollection<Oficina> OficinasResponsavel { get; set; }

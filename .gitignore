@@ -40,3 +40,14 @@ artifacts/
 *.sql
 *.ldf
 *.mdf
+
+secrets.json
+appsettings.Development.json
+
+Thumbs.db
+Desktop.ini
+
+*.log
+.vscode/
+
+GestaoOficinas.Web/wwwroot/lib/

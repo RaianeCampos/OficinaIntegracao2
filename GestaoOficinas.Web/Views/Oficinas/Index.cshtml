@@ -1,0 +1,79 @@
+﻿@model IEnumerable<GestaoOficinas.Application.DTOs.OficinaViewModel>
+
+@{
+    ViewData["Title"] = "Oficinas";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary"><i class="fa-solid fa-shapes me-2"></i>Oficinas</h2>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> Nova Oficina
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Nome da Oficina</th>
+                            <th>Tema</th>
+                            <th>Professor Responsável</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-end pe-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-secondary">@item.NomeOficina</td>
+                                    <td>@item.TemaOficina</td>
+                                    <td>
+                                        <i class="fa-solid fa-user-tie me-1 text-muted small"></i>
+                                        @(string.IsNullOrEmpty(item.NomeProfessorResponsavel) ? "N/A" : item.NomeProfessorResponsavel)
+                                    </td>
+                                    <td class="text-center">
+                                        @{
+                                            var statusClass = item.StatusOficina switch
+                                            {
+                                                "Em Andamento" => "bg-success",
+                                                "Concluída" => "bg-secondary",
+                                                "Planejamento" => "bg-warning text-dark",
+                                                _ => "bg-info text-dark"
+                                            };
+                                        }
+                                        <span class="badge @statusClass rounded-pill">@item.StatusOficina</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.IdOficina" class="btn btn-sm btn-outline-warning" title="Editar">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.IdOficina" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Deseja realmente excluir esta oficina?');">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-folder-open fa-2x mb-3 d-block"></i>
+                                    Nenhuma oficina cadastrada.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

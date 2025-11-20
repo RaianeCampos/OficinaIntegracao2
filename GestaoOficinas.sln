@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoOficinas.API", "Gesta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoOficinas.API.Tests", "GestaoOficinas.API.Tests\GestaoOficinas.API.Tests.csproj", "{D3256EFA-F7A7-48A4-871E-995CF154EA89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoOficinas.Web", "GestaoOficinas.Web\GestaoOficinas.Web.csproj", "{3DE78861-080D-459C-B139-ACA16C9B7C98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D3256EFA-F7A7-48A4-871E-995CF154EA89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3256EFA-F7A7-48A4-871E-995CF154EA89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3256EFA-F7A7-48A4-871E-995CF154EA89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DE78861-080D-459C-B139-ACA16C9B7C98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DE78861-080D-459C-B139-ACA16C9B7C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DE78861-080D-459C-B139-ACA16C9B7C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DE78861-080D-459C-B139-ACA16C9B7C98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

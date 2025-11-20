@@ -18,6 +18,7 @@
         public bool Representante { get; set; }
         public string CargoProfessor { get; set; }
         public int IdEscola { get; set; }
+        public bool Administrador { get; set; }
     }
 
     public class UpdateProfessorDto
