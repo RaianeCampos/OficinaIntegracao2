@@ -26,7 +26,7 @@ namespace GestaoOficinas.API.Controllers
         }
 
         [HttpPost("registrar")]
-        public async Task<IActionResult> RegistrarPresencas([FromBody] RegistrarPresencaDto dto)
+        public async Task<IActionResult> RegistrarPresencas([FromBody] CreatePresencaDto dto)
         {
             try
             {

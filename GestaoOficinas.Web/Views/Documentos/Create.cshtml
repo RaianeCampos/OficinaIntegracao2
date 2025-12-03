@@ -21,12 +21,8 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="DescricaoOficina" class="form-label">Descrição</label>
-                    <textarea asp-for="DescricaoOficina" class="form-control" rows="3"></textarea>
-                </div>
-
                 <div class="row">
+					<!-- Verificar se precisa desses campos no documento, se sim atualziar DTOs
                     <div class="col-md-3 mb-3">
                         <label asp-for="CargaHorariaOficinia" class="form-label">Carga Horária (h)</label>
                         <input asp-for="CargaHorariaOficinia" type="number" class="form-control" />
@@ -35,9 +31,10 @@
                         <label asp-for="DataOficina" class="form-label">Data de Início</label>
                         <input asp-for="DataOficina" type="date" class="form-control" />
                     </div>
+                    -->
                     <div class="col-md-3 mb-3">
-                        <label asp-for="StatusOficina" class="form-label">Status</label>
-                        <select asp-for="StatusOficina" class="form-select">
+                        <label asp-for="StatusDocumento" class="form-label">Status</label>
+                        <select asp-for="StatusDocumento" class="form-select">
                             <option value="Em Andamento">Em Andamento</option>
                             <option value="Planejamento">Planejamento</option>
                             <option value="Concluída">Concluída</option>

@@ -19,13 +19,13 @@ namespace GestaoOficinas.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PresencaDto>> GetPresencasByChamadaAsync(int idChamada)
+        public async Task<IEnumerable<PresencaViewModel>> GetPresencasByChamadaAsync(int idChamada)
         {
             var presencas = await _presencaRepository.GetPresencasByChamadaAsync(idChamada);
-            return _mapper.Map<IEnumerable<PresencaDto>>(presencas);
+            return _mapper.Map<IEnumerable<PresencaViewModel>>(presencas);
         }
 
-        public async Task RegistrarPresencasAsync(RegistrarPresencaDto dto)
+        public async Task RegistrarPresencasAsync(CreatePresencaDto dto)
         {
             foreach (var presencaAluno in dto.Presencas)
             {

@@ -109,12 +109,12 @@ namespace GestaoOficinas.API.Tests.Controllers
         {
             // Arrange
             var (chamada, aluno) = await SeedChamadaEAlunoAsync();
-            var registroDto = new RegistrarPresencaDto
+            var registroDto = new CreatePresencaDto
             {
                 IdChamada = chamada.IdChamada,
-                Presencas = new List<PresencaAlunoDto>
+                Presencas = new List<PresencaAluno>
                 {
-                    new PresencaAlunoDto { IdAluno = aluno.IdAluno, Presente = true }
+                    new PresencaAluno { IdAluno = aluno.IdAluno, Presente = true }
                 }
             };
 

@@ -60,9 +60,11 @@ namespace GestaoOficinas.Application.Mappers
             CreateMap<UpdateDocumentoDto, Documento>();
 
             // Presenca
-            CreateMap<Presenca, PresencaDto>()
-                .ForMember(dest => dest.NomeAluno,
-                           opt => opt.MapFrom(src => src.Aluno.NomeAluno));
+            CreateMap<Presenca, PresencaAluno>()
+                .ForMember(dest => dest.NomeAluno, 
+                opt => opt.MapFrom(src => src.Aluno.NomeAluno));
+            CreateMap<CreatePresencaDto, Presenca>();
+            CreateMap<UpdatePresencaDto, Presenca>();
 
             // OficinaTutor
             CreateMap<OficinaTutorDto, OficinaTutor>();

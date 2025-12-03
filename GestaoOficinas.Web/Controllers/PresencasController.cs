@@ -65,7 +65,7 @@ namespace GestaoOficinas.Web.Controllers
                 var response = await client.GetAsync("api/presencas");
                 if (response.IsSuccessStatusCode)
                 {
-                    var lista = await response.Content.ReadFromJsonAsync<List<PresencaDto>>();
+                    var lista = await response.Content.ReadFromJsonAsync<List<PresencaViewModel>>();
                     return View(lista);
                 }
 
@@ -78,19 +78,19 @@ namespace GestaoOficinas.Web.Controllers
             
             }            
 
-            return View(new List<PresencaDto>());
+            return View(new PresencaViewModel());
         }
 
         public async Task<IActionResult> Create()
         {
             await CarregarChamadasViewBag();
             await CarregarAlunosViewBag();
-            return View(new RegistrarPresencaDto { IdChamada = 0, Presencas = new List<PresencaAlunoDto>() });
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RegistrarPresencaDto presenca)
+        public async Task<IActionResult> Create(CreatePresencaDto presenca)
         {
             if (presenca == null || presenca.Presencas == null)
             {

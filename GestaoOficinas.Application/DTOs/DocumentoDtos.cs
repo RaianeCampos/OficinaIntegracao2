@@ -10,6 +10,8 @@
         public int? IdEscola { get; set; }
         public int? IdAluno { get; set; }
         public string NomeOficina { get; set; }
+        public string TemaOficina { get; set; }
+
     }
 
     public class CreateDocumentoDto
@@ -20,6 +22,9 @@
         public int IdOficina { get; set; }
         public int? IdEscola { get; set; }
         public int? IdAluno { get; set; }
+        public int? IdProfessor { get; set; }
+        public string NomeOficina { get; set; }
+        public string TemaOficina { get; set; }
     }
 
     public class UpdateDocumentoDto

@@ -6,8 +6,8 @@ namespace GestaoOficinas.Application.Interfaces
 {
     public interface IPresencaService
     {
-        Task<IEnumerable<PresencaDto>> GetPresencasByChamadaAsync(int idChamada);
-        Task RegistrarPresencasAsync(RegistrarPresencaDto dto);
+        Task<IEnumerable<PresencaViewModel>> GetPresencasByChamadaAsync(int idChamada);
+        Task RegistrarPresencasAsync(CreatePresencaDto dto);
         Task UpdatePresencaAsync(int idAluno, int idChamada, bool presente);
     }
 }
