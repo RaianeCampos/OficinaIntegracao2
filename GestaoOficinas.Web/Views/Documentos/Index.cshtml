@@ -1,0 +1,81 @@
+﻿@model GestaoOficinas.Application.DTOs.DocumentoViewModel
+<!-- model GestaoOficinas.Web.Models.DocumentoListViewModel -->
+
+
+@{
+	ViewData["Title"] = "Documentos";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary"><i class="fa-solid fa-file-lines me-2"></i>Documentos</h2>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> Novo Documento
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Tipo</th>
+                            <th>Oficina</th>
+                            <th>Emissão</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any()) 
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-secondary">@item.TipoDocumento</td>
+                                    <td>
+                                        <div class="small text-muted">@item.NomeOficina</div>
+                                        <div class="small">@item.TemaOficina</div>
+                                    </td>
+                                    <td>
+                                        @item.Emissao.ToLocalTime().ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td class="text-center">
+                                        @{
+                                            var statusClass = item.StatusDocumento switch
+                                            {
+                                                "Gerado" => "bg-info text-dark",
+                                                "Emitido" => "bg-success",
+                                                "Cancelado" => "bg-danger",
+                                                "Pendente" => "bg-warning text-dark",
+                                                _ => "bg-secondary"
+                                            };
+                                        }
+                                        <span class="badge @statusClass rounded-pill">@item.StatusDocumento</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.IdDocumento" class="btn btn-sm btn-outline-warning" title="Editar">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-folder-open fa-2x mb-3 d-block"></i>
+                                    Nenhum documento encontrado.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
