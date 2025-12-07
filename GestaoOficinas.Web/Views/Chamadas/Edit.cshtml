@@ -1,0 +1,57 @@
+﻿@model GestaoOficinas.Application.DTOs.ChamadaViewModel
+
+@{
+    ViewData["Title"] = "Editar Chamada";
+}
+
+<div class="container-fluid">
+    <h2 class="text-primary mb-4"><i class="fa-solid fa-pen-to-square me-2"></i>Editar Presença</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="IdChamada" name="id" />
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="DataChamada" class="form-label">Data</label>
+                        <input asp-for="DataChamada" class="form-control" type="date" />
+                        <span asp-validation-for="DataChamada" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="IdTurma" class="form-label">Turma</label>
+                        <select asp-for="IdTurma" asp-items="ViewBag.ListaTurmas" class="form-select">
+                            <option value="">Selecione...</option>
+                        </select>
+                        <span asp-validation-for="IdTurma" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="IdAluno" class="form-label">Aluno</label>
+                        <select asp-for="IdAluno" asp-items="ViewBag.ListaAlunos" class="form-select">
+                            <option value="">Selecione...</option>
+                        </select>
+                        <span asp-validation-for="IdAluno" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3 form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" asp-for="Presente" id="checkEdit">
+                    <label class="form-check-label fw-bold" for="checkEdit">Presente</label>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

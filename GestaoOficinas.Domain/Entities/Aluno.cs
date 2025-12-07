@@ -11,8 +11,9 @@ namespace GestaoOficinas.Domain.Entities
         public string TelefoneAluno { get; set; }
         public string RaAluno { get; set; }
         public DateTime NascimentoAluno { get; set; }
-        public int IdTurma { get; set; }
-        public virtual Turma Turma { get; set; }
+        //public int IdTurma { get; set; }
+        //public virtual Turma Turma { get; set; }
+        public virtual ICollection<Turma> Turmas { get; set; } = new List<Turma>();
         public virtual ICollection<Inscricao> Inscricoes { get; set; }
         public virtual ICollection<Presenca> Presencas { get; set; }
     }

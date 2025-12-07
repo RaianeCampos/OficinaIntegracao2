@@ -1,4 +1,5 @@
 ﻿@model GestaoOficinas.Application.DTOs.UpdateAlunoDto
+
 @{
     ViewData["Title"] = "Editar Aluno";
 }
@@ -7,7 +8,7 @@
     <h2 class="text-primary mb-4"><i class="fa-solid fa-pen-to-square me-2"></i>Editar Aluno</h2>
     <div class="card shadow-sm">
         <div class="card-body p-4">
-            <form asp-action="Edit" asp-route-id="@ViewBag.IdAluno">
+            <form asp-action="Edit" asp-route-id="@ViewBag.IdAluno" id="formAluno">
                 <input type="hidden" name="id" value="@ViewBag.IdAluno" />
 
                 <div class="row">
@@ -39,13 +40,35 @@
                         <span asp-validation-for="NascimentoAluno" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="IdTurma" class="form-label">Turma</label>
-                    <select asp-for="IdTurma" asp-items="ViewBag.ListaTurmas" class="form-select">
-                        <option value="">Selecione uma turma...</option>
-                    </select>
-                    <span asp-validation-for="IdTurma" class="text-danger"></span>
+
+                <hr class="my-4" />
+
+                <h5 class="text-muted mb-3"><i class="fa-solid fa-layer-group me-2"></i>Vínculo com Turmas</h5>
+
+                <div class="row align-items-end mb-3">
+                    <div class="col-md-5">
+                        <label class="form-label">Adicionar Turma</label>
+                        <select id="selectTurma" asp-items="ViewBag.ListaTurmas" class="form-select">
+                            <option value="">-- Selecione --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-primary w-100" onclick="adicionarTurmaManual()">
+                            <i class="fa-solid fa-plus"></i> Adicionar
+                        </button>
+                    </div>
                 </div>
+
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Turmas Vinculadas:</h6>
+                        <ul id="listaTurmas" class="list-group list-group-flush bg-transparent">
+                            <li class="list-group-item bg-transparent text-muted small fst-italic" id="msgVazio" style="display:none">Nenhuma turma vinculada.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="containerInputsHidden"></div>
 
                 <div class="d-flex justify-content-end mt-4 gap-2">
                     <a asp-action="Index" class="btn btn-secondary">Voltar</a>
@@ -55,10 +78,74 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script src="~/js/jquery.mask.min.js"></script>
-    <script>$(document).ready(function(){ $('.phone-mask').mask('(00) 00000-0000'); });</script>
+    <script>
+        $(document).ready(function(){
+            $('.phone-mask').mask('(00) 00000-0000');
+
+          
+            var turmasSelecionadas = @Html.Raw(Json.Serialize(Model.TurmaIds));
+
+            if (turmasSelecionadas && turmasSelecionadas.length > 0) {
+                turmasSelecionadas.forEach(function(id) {
+                    var option = $("#selectTurma option[value='" + id + "']");
+                    if (option.length > 0) {
+                        adicionarTurmaVisual(id, option.text());
+                    }
+                });
+            } else {
+                $("#msgVazio").show();
+            }
+        });
+
+        function adicionarTurmaManual() {
+            var select = document.getElementById("selectTurma");
+            var id = select.value;
+            var nome = select.options[select.selectedIndex].text;
+
+            if (!id) {
+                alert("Selecione uma turma válida!");
+                return;
+            }
+
+            if ($("#turma-item-" + id).length > 0) {
+                alert("Esta turma já foi adicionada.");
+                return;
+            }
+
+            adicionarTurmaVisual(id, nome);
+            select.value = ""; 
+        }
+
+        function adicionarTurmaVisual(id, nome) {
+            $("#msgVazio").hide();
+
+            var itemHtml = `
+                <li class="list-group-item d-flex justify-content-between align-items-center bg-white mb-1 rounded shadow-sm" id="turma-item-${id}">
+                    <span><i class="fa-solid fa-people-group me-2 text-info"></i> ${nome}</span>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removerTurma(${id})">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </li>
+            `;
+            $("#listaTurmas").append(itemHtml);
+
+            var inputHtml = `<input type="hidden" name="TurmaIds" value="${id}" id="input-turma-${id}" />`;
+            $("#containerInputsHidden").append(inputHtml);
+        }
+
+        function removerTurma(id) {
+            $("#turma-item-" + id).remove();
+            $("#input-turma-" + id).remove();
+
+            if ($("#listaTurmas li").length <= 1) {
+                $("#msgVazio").show();
+            }
+        }
+    </script>
 }

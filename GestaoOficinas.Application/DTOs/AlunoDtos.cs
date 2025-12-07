@@ -6,7 +6,8 @@
         public string NomeAluno { get; set; }
         public string EmailAluno { get; set; }
         public string RaAluno { get; set; }
-        public int IdTurma { get; set; }
+        public List<string> NomesTurmas { get; set; } = new List<string>();
+        public List<int> TurmaIds { get; set; } = new List<int>();
         public string? NomeTurma { get; set; }
         public string TelefoneAluno { get; set; }
         public DateTime NascimentoAluno { get; set; }
@@ -19,7 +20,7 @@
         public string TelefoneAluno { get; set; }
         public string RaAluno { get; set; }
         public DateTime NascimentoAluno { get; set; }
-        public int IdTurma { get; set; }
+        public List<int> TurmaIds { get; set; } = new List<int>();
     }
 
     public class UpdateAlunoDto
@@ -29,6 +30,6 @@
         public string TelefoneAluno { get; set; }
         public string RaAluno { get; set; }
         public DateTime NascimentoAluno { get; set; }
-        public int IdTurma { get; set; }
+        public List<int> TurmaIds { get; set; } = new List<int>();
     }
 }

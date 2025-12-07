@@ -29,7 +29,7 @@
                         <th class="ps-4">Nome</th>
                         <th>RA</th>
                         <th>Email</th>
-                        <th>Turma</th>
+                        <th style="min-width: 200px;">Turmas Vinculadas</th>
                         <th class="text-end pe-4">Ações</th>
                     </tr>
                 </thead>
@@ -43,14 +43,21 @@
                                 <td>@item.RaAluno</td>
                                 <td>@item.EmailAluno</td>
                                 <td>
-                                    <div class="d-flex flex-column" style="line-height: 1.2;">
-                                        <span class="fw-semibold">
-                                            @(string.IsNullOrEmpty(item.NomeTurma) ? "Não vinculada" : item.NomeTurma)
-                                        </span>
-                                        <small class="text-muted" style="font-size: 0.75rem;">
-                                            ID: @item.IdTurma
-                                        </small>
-                                    </div>
+                                    @if (item.NomesTurmas != null && item.NomesTurmas.Any())
+                                    {
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach (var turma in item.NomesTurmas)
+                                            {
+                                                <span class="badge bg-secondary bg-opacity-75 text-white fw-normal">
+                                                    @turma
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small fst-italic">Não matriculado</span>
+                                    }
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group" role="group">

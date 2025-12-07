@@ -1,0 +1,78 @@
+﻿@model IEnumerable<GestaoOficinas.Application.DTOs.ChamadaViewModel>
+
+@{
+    ViewData["Title"] = "Chamadas / Presença";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary"><i class="fa-solid fa-list-check me-2"></i>Controle de Presença</h2>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> Nova Chamada
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="text-white" style="background-color: #13293D;">
+                        <tr>
+                            <th class="ps-4">Data</th>
+                            <th>Turma</th>
+                            <th>Aluno</th>
+                            <th class="text-center">Presente?</th>
+                            <th class="text-end pe-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">@item.DataChamada.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <span class="fw-bold text-secondary">@item.NomeTurma</span>
+                                    </td>
+                                    <td>@item.NomeAluno</td>
+                                    <td class="text-center">
+                                        @if (item.Presente)
+                                        {
+                                            <span class="badge bg-success rounded-pill">Sim</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger rounded-pill">Não</span>
+                                        }
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.IdChamada" class="btn btn-sm btn-outline-warning" title="Editar">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                            <form asp-action="Delete" asp-route-id="@item.IdChamada" method="post" class="d-inline" onsubmit="return confirm('Excluir este registro?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1" title="Excluir">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-clipboard-list fa-2x mb-3 d-block"></i>
+                                    Nenhum registro de chamada encontrado.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

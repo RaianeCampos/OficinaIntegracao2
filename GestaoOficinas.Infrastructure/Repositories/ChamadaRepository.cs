@@ -35,7 +35,8 @@ namespace GestaoOficinas.Infrastructure.Repositories
         public async Task<IEnumerable<Chamada>> GetAllAsync()
         {
             return await _context.Chamadas
-                .Include(c => c.Turma)
+                .Include(c => c.Turma) 
+                .Include(c => c.Aluno) 
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -44,6 +45,7 @@ namespace GestaoOficinas.Infrastructure.Repositories
         {
             return await _context.Chamadas
                 .Include(c => c.Turma)
+                .Include(c => c.Aluno) 
                 .FirstOrDefaultAsync(c => c.IdChamada == id);
         }
 

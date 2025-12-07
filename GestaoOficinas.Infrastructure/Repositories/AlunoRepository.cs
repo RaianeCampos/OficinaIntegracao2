@@ -28,23 +28,32 @@ namespace GestaoOficinas.Infrastructure.Repositories
 
         public async Task<IEnumerable<Aluno>> GetAllAsync()
         {
-            return await _context.Alunos.AsNoTracking().ToListAsync();
+            return await _context.Alunos
+                .Include(a => a.Turmas)
+                .AsNoTracking()         
+                .ToListAsync();
         }
+
         public async Task<IEnumerable<Aluno>> GetAllWithTurmaAsync()
         {
             return await _context.Alunos
-                                 .Include(a => a.Turma)
-                                 .ToListAsync();
+                .Include(a => a.Turmas)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
+        
         public async Task<Aluno> GetByIdAsync(int id)
         {
-            return await _context.Alunos.FindAsync(id);
+            return await _context.Alunos
+                .Include(a => a.Turmas)
+                .FirstOrDefaultAsync(a => a.IdAluno == id);
         }
 
         public async Task UpdateAsync(Aluno aluno)
         {
             _context.Entry(aluno).State = EntityState.Modified;
+
             await _context.SaveChangesAsync();
         }
     }

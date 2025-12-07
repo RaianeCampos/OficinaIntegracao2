@@ -21,11 +21,16 @@ namespace GestaoOficinas.Application.Mappers
                      .ForMember(dest => dest.NomeEscola, opt => opt.MapFrom(src => src.Escola.NomeEscola));
 
             // Aluno
-            CreateMap<Aluno, AlunoViewModel>();
-            CreateMap<CreateAlunoDto, Aluno>();
-            CreateMap<UpdateAlunoDto, Aluno>();
             CreateMap<Aluno, AlunoViewModel>()
-                .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(src => src.Turma.NomeTurma));
+                .ForMember(dest => dest.TurmaIds,
+                           opt => opt.MapFrom(src => src.Turmas.Select(t => t.IdTurma).ToList()))
+                .ForMember(dest => dest.NomesTurmas,
+                           opt => opt.MapFrom(src => src.Turmas.Select(t => t.NomeTurma).ToList()));
+            CreateMap<CreateAlunoDto, Aluno>()
+                .ForMember(dest => dest.Turmas, opt => opt.Ignore()); // Turmas tratadas no Service
+
+            CreateMap<UpdateAlunoDto, Aluno>()
+                .ForMember(dest => dest.Turmas, opt => opt.Ignore());
 
             // Oficina
             CreateMap<Oficina, OficinaViewModel>()

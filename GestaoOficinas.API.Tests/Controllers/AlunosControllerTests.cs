@@ -82,13 +82,11 @@ namespace GestaoOficinas.API.Tests.Controllers
                 SemestreTurma = "2025.1"
             };
 
-            // Adicionar todos ao contexto
             await context.Escolas.AddAsync(escola);
             await context.Professores.AddAsync(professor);
             await context.Oficinas.AddAsync(oficina);
             await context.Turmas.AddAsync(turma);
 
-            // Salvar
             await context.SaveChangesAsync(); 
             return turma;
         }
@@ -105,7 +103,7 @@ namespace GestaoOficinas.API.Tests.Controllers
                 RaAluno = "123456",
                 NascimentoAluno = DateTime.Now.AddYears(-18),
                 TelefoneAluno = "11777777777",
-                IdTurma = turma.IdTurma
+                TurmaIds = new List<int> { turma.IdTurma }
             };
 
             // Act

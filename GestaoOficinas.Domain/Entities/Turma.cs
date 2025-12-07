@@ -11,7 +11,7 @@ namespace GestaoOficinas.Domain.Entities
         public string SemestreTurma { get; set; } 
         public int IdOficina { get; set; }
         public virtual Oficina Oficina { get; set; }
-        public virtual ICollection<Aluno> Alunos { get; set; }
+        public virtual ICollection<Aluno> Alunos { get; set; } = new List<Aluno>();
         public virtual ICollection<Chamada> Chamadas { get; set; }
         public virtual ICollection<Inscricao> Inscricoes { get; set; }
     }

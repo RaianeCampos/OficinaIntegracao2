@@ -82,8 +82,7 @@ namespace GestaoOficinas.API.Tests.Controllers
             {
                 IdAluno = 1,
                 NomeAluno = "Aluno Teste",
-                IdTurma = 1,
-                Turma = turma,
+                Turmas = new List<Turma> { turma },
                 EmailAluno = "aluno@teste.com",
                 TelefoneAluno = "11777777777",
                 RaAluno = "123456",

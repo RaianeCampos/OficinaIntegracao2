@@ -3,6 +3,7 @@ using System;
 using GestaoOficinas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GestaoOficinas.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251207211121_AdicionarRelacionamentoChamadaAluno")]
+    partial class AdicionarRelacionamentoChamadaAluno
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace GestaoOficinas.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("AlunoTurma", b =>
-                {
-                    b.Property<int>("AlunosIdAluno")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TurmasIdTurma")
-                        .HasColumnType("integer");
-
-                    b.HasKey("AlunosIdAluno", "TurmasIdTurma");
-
-                    b.HasIndex("TurmasIdTurma");
-
-                    b.ToTable("AlunoTurmas", (string)null);
-                });
 
             modelBuilder.Entity("GestaoOficinas.Domain.Entities.Aluno", b =>
                 {
@@ -48,6 +36,9 @@ namespace GestaoOficinas.Infrastructure.Migrations
                     b.Property<string>("EmailAluno")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("IdTurma")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("NascimentoAluno")
                         .HasColumnType("timestamp with time zone");
@@ -65,6 +56,8 @@ namespace GestaoOficinas.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("IdAluno");
+
+                    b.HasIndex("IdTurma");
 
                     b.ToTable("Alunos");
                 });
@@ -339,19 +332,15 @@ namespace GestaoOficinas.Infrastructure.Migrations
                     b.ToTable("Turmas");
                 });
 
-            modelBuilder.Entity("AlunoTurma", b =>
+            modelBuilder.Entity("GestaoOficinas.Domain.Entities.Aluno", b =>
                 {
-                    b.HasOne("GestaoOficinas.Domain.Entities.Aluno", null)
-                        .WithMany()
-                        .HasForeignKey("AlunosIdAluno")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("GestaoOficinas.Domain.Entities.Turma", "Turma")
+                        .WithMany("Alunos")
+                        .HasForeignKey("IdTurma")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("GestaoOficinas.Domain.Entities.Turma", null)
-                        .WithMany()
-                        .HasForeignKey("TurmasIdTurma")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Turma");
                 });
 
             modelBuilder.Entity("GestaoOficinas.Domain.Entities.Chamada", b =>
@@ -519,6 +508,8 @@ namespace GestaoOficinas.Infrastructure.Migrations
 
             modelBuilder.Entity("GestaoOficinas.Domain.Entities.Turma", b =>
                 {
+                    b.Navigation("Alunos");
+
                     b.Navigation("Chamadas");
 
                     b.Navigation("Inscricoes");

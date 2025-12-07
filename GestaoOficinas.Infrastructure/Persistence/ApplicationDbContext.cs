@@ -67,11 +67,10 @@ namespace GestaoOficinas.Infrastructure.Persistence
                 .WithOne(p => p.Escola)
                 .HasForeignKey(p => p.IdEscola);
 
-            modelBuilder.Entity<Turma>()
-                .HasMany(t => t.Alunos)
-                .WithOne(a => a.Turma)
-                .HasForeignKey(a => a.IdTurma)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Aluno>()
+                .HasMany(a => a.Turmas)
+                .WithMany(t => t.Alunos)
+                .UsingEntity(j => j.ToTable("AlunoTurmas"));
 
             modelBuilder.Entity<Oficina>()
                 .HasMany(o => o.Turmas)

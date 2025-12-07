@@ -9,18 +9,35 @@ namespace GestaoOficinas.Application.Services
     public class AlunoService : IAlunoService
     {
         private readonly IAlunoRepository _repository;
+        private readonly ITurmaRepository _turmaRepository;
         private readonly IMapper _mapper;
 
-        public AlunoService(IAlunoRepository repository, IMapper mapper)
+        public AlunoService(IAlunoRepository repository, ITurmaRepository turmaRepository, IMapper mapper)
         {
             _repository = repository;
+            _turmaRepository = turmaRepository;
             _mapper = mapper;
         }
 
         public async Task<AlunoViewModel> CreateAsync(CreateAlunoDto dto)
         {
             var aluno = _mapper.Map<Aluno>(dto);
+
             aluno.NascimentoAluno = DateTime.SpecifyKind(aluno.NascimentoAluno, DateTimeKind.Utc);
+
+            aluno.Turmas = new List<Turma>();
+
+            if (dto.TurmaIds != null && dto.TurmaIds.Any())
+            {
+                foreach (var idTurma in dto.TurmaIds)
+                {
+                    var turma = await _turmaRepository.GetByIdAsync(idTurma);
+                    if (turma != null)
+                    {
+                        aluno.Turmas.Add(turma);
+                    }
+                }
+            }
 
             await _repository.AddAsync(aluno);
             return _mapper.Map<AlunoViewModel>(aluno);
@@ -35,7 +52,7 @@ namespace GestaoOficinas.Application.Services
 
         public async Task<IEnumerable<AlunoViewModel>> GetAllAsync()
         {
-            var alunos = await _repository.GetAllWithTurmaAsync();
+            var alunos = await _repository.GetAllAsync();
             return _mapper.Map<IEnumerable<AlunoViewModel>>(alunos);
         }
 
@@ -48,11 +65,26 @@ namespace GestaoOficinas.Application.Services
         public async Task UpdateAsync(int id, UpdateAlunoDto dto)
         {
             var aluno = await _repository.GetByIdAsync(id);
+
             if (aluno == null) throw new KeyNotFoundException("Aluno não encontrado.");
 
             _mapper.Map(dto, aluno);
 
             aluno.NascimentoAluno = DateTime.SpecifyKind(aluno.NascimentoAluno, DateTimeKind.Utc);
+
+            if (dto.TurmaIds != null)
+            {
+                aluno.Turmas.Clear();
+
+                foreach (var idTurma in dto.TurmaIds)
+                {
+                    var turma = await _turmaRepository.GetByIdAsync(idTurma);
+                    if (turma != null)
+                    {
+                        aluno.Turmas.Add(turma);
+                    }
+                }
+            }
 
             await _repository.UpdateAsync(aluno);
         }

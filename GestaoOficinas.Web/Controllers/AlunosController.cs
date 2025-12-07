@@ -27,10 +27,8 @@ namespace GestaoOficinas.Web.Controllers
             return client;
         }
 
-        // Método auxiliar para carregar Turmas no ViewBag (para os Dropdowns)
         private async Task CarregarTurmasViewBag()
         {
-            // 1. Inicializa com lista vazia por padrão (Evita o NullReferenceException)
             ViewBag.ListaTurmas = new SelectList(new List<TurmaViewModel>(), "IdTurma", "NomeTurma");
 
             var client = CreateClientWithToken();
@@ -40,11 +38,8 @@ namespace GestaoOficinas.Web.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // 2. Tenta obter as turmas da API
-                    // Importante: Use TurmaViewModel em vez de dynamic para garantir os nomes das propriedades
                     var turmas = await response.Content.ReadFromJsonAsync<List<TurmaViewModel>>();
 
-                    // 3. Atualiza a ViewBag se houver dados
                     if (turmas != null && turmas.Any())
                     {
                         ViewBag.ListaTurmas = new SelectList(turmas, "IdTurma", "NomeTurma");
@@ -52,13 +47,12 @@ namespace GestaoOficinas.Web.Controllers
                 }
                 else
                 {
-                    // Opcional: Logar que a API não retornou sucesso (ex: 404 Not Found)
-                    // A lista continua vazia conforme inicializado na linha 1
+                    
                 }
             }
             catch (Exception)
             {
-                // Em caso de erro de conexão, a lista permanece vazia (evitando o crash da tela)
+                
             }
         }
 
@@ -146,7 +140,7 @@ namespace GestaoOficinas.Web.Controllers
                     NomeAluno = viewModel.NomeAluno,
                     EmailAluno = viewModel.EmailAluno,
                     RaAluno = viewModel.RaAluno,
-                    IdTurma = viewModel.IdTurma,
+                    TurmaIds = viewModel.TurmaIds,
 
                     TelefoneAluno = viewModel.TelefoneAluno,
                     NascimentoAluno = viewModel.NascimentoAluno
