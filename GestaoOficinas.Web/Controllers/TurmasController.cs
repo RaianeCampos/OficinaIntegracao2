@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GestaoOficinas.Application.DTOs;
+using GestaoOficinas.Web.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using GestaoOficinas.Application.DTOs;
 using System.Net.Http.Headers;
 
 namespace GestaoOficinas.Web.Controllers
@@ -28,56 +29,65 @@ namespace GestaoOficinas.Web.Controllers
         private async Task CarregarOficinasViewBag()
         {
             var client = CreateClientWithToken();
-            var response = await client.GetAsync("api/oficinas");
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var oficinas = await response.Content.ReadFromJsonAsync<List<OficinaViewModel>>();
-                ViewBag.ListaOficinas = new SelectList(oficinas, "IdOficina", "NomeOficina");
+                var response = await client.GetAsync("api/oficinas");
+                if (response.IsSuccessStatusCode)
+                {
+                    var oficinas = await response.Content.ReadFromJsonAsync<List<OficinaViewModel>>();
+                    ViewBag.ListaOficinas = new SelectList(oficinas, "IdOficina", "NomeOficina"); 
+                }
+                else
+                {
+                    ViewBag.ListaOficinas = new SelectList(new List<OficinaViewModel>(), "IdOficina", "NomeOficina");
+                }
             }
-            else
+            catch
             {
                 ViewBag.ListaOficinas = new SelectList(new List<OficinaViewModel>(), "IdOficina", "NomeOficina");
             }
         }
 
-        private async Task CarregarAlunosViewBag()
-        {
-            var client = CreateClientWithToken();
-            var response = await client.GetAsync("api/alunos");
 
-            if (response.IsSuccessStatusCode)
-            {
-                var alunos = await response.Content.ReadFromJsonAsync<List<AlunoViewModel>>();
-                ViewBag.ListaAlunos = new SelectList(alunos, "IdAluno", "NomeAluno");
-            }
-            else
-            {
-                ViewBag.ListaAlunos = new SelectList(new List<AlunoViewModel>(), "IdAluno", "NomeAluno");
-            }
-        }
-
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca, int pagina = 1)
         {
             var client = CreateClientWithToken();
             try
             {
-                var response = await client.GetAsync("api/turmas"); 
+                var response = await client.GetAsync("api/turmas");
                 if (response.IsSuccessStatusCode)
                 {
-                    var lista = await response.Content.ReadFromJsonAsync<List<TurmaViewModel>>();
-                    return View(lista);
+                    var todasTurmas = await response.Content.ReadFromJsonAsync<List<TurmaViewModel>>();
+
+                    if (!string.IsNullOrEmpty(busca))
+                    {
+                        todasTurmas = todasTurmas.Where(t =>
+                            (t.NomeTurma ?? "").Contains(busca, StringComparison.OrdinalIgnoreCase) ||
+                            (t.NomeOficina ?? "").Contains(busca, StringComparison.OrdinalIgnoreCase)
+                        ).ToList();
+                    }
+
+                    int tamanhoPagina = 10;
+                    var count = todasTurmas.Count;
+                    var items = todasTurmas.Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
+
+                    var model = new TurmaListViewModel
+                    {
+                        Turmas = items,
+                        TermoBusca = busca,
+                        PaginaAtual = pagina,
+                        TotalPaginas = (int)Math.Ceiling(count / (double)tamanhoPagina)
+                    };
+                    return View(model);
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     return RedirectToAction("Login", "Auth");
                 }
             }
-            catch {
+            catch { }
 
-            }
-
-            return View(new List<TurmaViewModel>());
+            return View(new TurmaListViewModel());
         }
 
         public async Task<IActionResult> Create()
@@ -104,8 +114,10 @@ namespace GestaoOficinas.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var erroMsg = await response.Content.ReadAsStringAsync();
+            ModelState.AddModelError("", $"Erro ao cadastrar: {erroMsg}");
+
             await CarregarOficinasViewBag();
-            ModelState.AddModelError("", "Erro ao cadastrar turma. Verifique os dados.");
             return View(turma);
         }
 
@@ -116,10 +128,19 @@ namespace GestaoOficinas.Web.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                var turmaViewModel = await response.Content.ReadFromJsonAsync<TurmaViewModel>();
+                var viewModel = await response.Content.ReadFromJsonAsync<TurmaViewModel>();
+
+                var updateDto = new UpdateTurmaDto
+                {
+                    NomeTurma = viewModel.NomeTurma,
+                    PeriodoTurma = viewModel.PeriodoTurma,
+                    SemestreTurma = viewModel.SemestreTurma
+                };
+
                 await CarregarOficinasViewBag();
-                await CarregarAlunosViewBag();
-                return View(turmaViewModel);
+
+                ViewBag.IdTurma = id;
+                return View(updateDto);
             }
 
             return NotFound();
@@ -132,7 +153,7 @@ namespace GestaoOficinas.Web.Controllers
             if (!ModelState.IsValid)
             {
                 await CarregarOficinasViewBag();
-                await CarregarAlunosViewBag();
+                ViewBag.IdTurma = id;
                 return View(turma);
             }
 
@@ -144,9 +165,11 @@ namespace GestaoOficinas.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var erroMsg = await response.Content.ReadAsStringAsync();
+            ModelState.AddModelError("", $"Erro ao atualizar: {erroMsg}");
+
             await CarregarOficinasViewBag();
-            await CarregarAlunosViewBag();
-            ModelState.AddModelError("", "Erro ao atualizar turma.");
+            ViewBag.IdTurma = id;
             return View(turma);
         }
 

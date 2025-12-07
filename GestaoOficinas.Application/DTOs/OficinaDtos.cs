@@ -7,7 +7,11 @@
         public string TemaOficina { get; set; }
         public string StatusOficina { get; set; }
         public int IdProfessor { get; set; }
-        public string NomeProfessorResponsavel { get; set; }
+        public string? NomeProfessorResponsavel { get; set; }
+        public string DescricaoOficina { get; set; }
+        public int CargaHorariaOficinia { get; set; }
+        public DateTime DataOficina { get; set; }
+
     }
 
     public class CreateOficinaDto

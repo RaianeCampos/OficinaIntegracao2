@@ -31,6 +31,13 @@ namespace GestaoOficinas.Infrastructure.Repositories
             return await _context.Professores.AsNoTracking().ToListAsync();
         }
 
+        public async Task<IEnumerable<Professor>> GetAllWithEscolaAsync()
+        {
+            return await _context.Professores
+                                 .Include(p => p.Escola)
+                                 .ToListAsync();
+        }
+
         public async Task<Professor> GetByIdAsync(int id)
         {
             return await _context.Professores.FindAsync(id);

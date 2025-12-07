@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GestaoOficinas.Application.DTOs;
+using GestaoOficinas.Web.Models; 
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -29,20 +30,27 @@ namespace GestaoOficinas.Web.Controllers
         private async Task CarregarProfessoresViewBag()
         {
             var client = CreateClientWithToken();
-            var response = await client.GetAsync("api/professores");
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var professores = await response.Content.ReadFromJsonAsync<List<ProfessorViewModel>>();
-                ViewBag.ListaProfessores = new SelectList(professores, "IdProfessor", "NomeProfessor");
+                var response = await client.GetAsync("api/professores");
+                if (response.IsSuccessStatusCode)
+                {
+                    var professores = await response.Content.ReadFromJsonAsync<List<ProfessorViewModel>>();
+                    ViewBag.ListaProfessores = new SelectList(professores, "IdProfessor", "NomeProfessor");
+                }
+                else
+                {
+                    ViewBag.ListaProfessores = new SelectList(new List<ProfessorViewModel>(), "IdProfessor", "NomeProfessor");
+                }
             }
-            else
+            catch
             {
                 ViewBag.ListaProfessores = new SelectList(new List<ProfessorViewModel>(), "IdProfessor", "NomeProfessor");
             }
         }
 
-        public async Task<IActionResult> Index()
+        // --- INDEX COM BUSCA E PAGINAÇÃO ---
+        public async Task<IActionResult> Index(string busca, int pagina = 1)
         {
             var client = CreateClientWithToken();
             try
@@ -50,8 +58,31 @@ namespace GestaoOficinas.Web.Controllers
                 var response = await client.GetAsync("api/oficinas");
                 if (response.IsSuccessStatusCode)
                 {
-                    var lista = await response.Content.ReadFromJsonAsync<List<OficinaViewModel>>();
-                    return View(lista);
+                    var todasOficinas = await response.Content.ReadFromJsonAsync<List<OficinaViewModel>>();
+
+                    // Filtro
+                    if (!string.IsNullOrEmpty(busca))
+                    {
+                        todasOficinas = todasOficinas.Where(o =>
+                            (o.NomeOficina ?? "").Contains(busca, StringComparison.OrdinalIgnoreCase) ||
+                            (o.TemaOficina ?? "").Contains(busca, StringComparison.OrdinalIgnoreCase) ||
+                            (o.NomeProfessorResponsavel ?? "").Contains(busca, StringComparison.OrdinalIgnoreCase)
+                        ).ToList();
+                    }
+
+                    // Paginação
+                    int tamanhoPagina = 10;
+                    var count = todasOficinas.Count;
+                    var items = todasOficinas.Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
+
+                    var model = new OficinaListViewModel
+                    {
+                        Oficinas = items,
+                        TermoBusca = busca,
+                        PaginaAtual = pagina,
+                        TotalPaginas = (int)Math.Ceiling(count / (double)tamanhoPagina)
+                    };
+                    return View(model);
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
@@ -60,7 +91,7 @@ namespace GestaoOficinas.Web.Controllers
             }
             catch { }
 
-            return View(new List<OficinaViewModel>());
+            return View(new OficinaListViewModel());
         }
 
         public async Task<IActionResult> Create()
@@ -87,8 +118,10 @@ namespace GestaoOficinas.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var erroApi = await response.Content.ReadAsStringAsync();
+            ModelState.AddModelError("", $"Erro ao cadastrar: {erroApi}");
+
             await CarregarProfessoresViewBag();
-            ModelState.AddModelError("", "Erro ao cadastrar oficina.");
             return View(oficina);
         }
 
@@ -99,9 +132,23 @@ namespace GestaoOficinas.Web.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                var oficinaViewModel = await response.Content.ReadFromJsonAsync<OficinaViewModel>();
+                var viewModel = await response.Content.ReadFromJsonAsync<OficinaViewModel>();
+
+                var updateDto = new UpdateOficinaDto
+                {
+                    NomeOficina = viewModel.NomeOficina,
+                    TemaOficina = viewModel.TemaOficina,
+                    DescricaoOficina = viewModel.DescricaoOficina,
+                    CargaHorariaOficinia = viewModel.CargaHorariaOficinia,
+                    DataOficina = viewModel.DataOficina,
+                    StatusOficina = viewModel.StatusOficina,
+                    IdProfessor = viewModel.IdProfessor
+                };
+
                 await CarregarProfessoresViewBag();
-                return View(oficinaViewModel);
+                ViewBag.IdOficina = id; 
+
+                return View(updateDto);
             }
 
             return NotFound();
@@ -114,6 +161,7 @@ namespace GestaoOficinas.Web.Controllers
             if (!ModelState.IsValid)
             {
                 await CarregarProfessoresViewBag();
+                ViewBag.IdOficina = id;
                 return View(oficina);
             }
 
@@ -125,8 +173,11 @@ namespace GestaoOficinas.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var erroApi = await response.Content.ReadAsStringAsync();
+            ModelState.AddModelError("", $"Erro ao atualizar: {erroApi}");
+
             await CarregarProfessoresViewBag();
-            ModelState.AddModelError("", "Erro ao atualizar oficina.");
+            ViewBag.IdOficina = id;
             return View(oficina);
         }
 

@@ -6,6 +6,8 @@
         public string NomeTurma { get; set; }
         public int IdOficina { get; set; }
         public string NomeOficina { get; set; }
+        public string PeriodoTurma { get; set; }
+        public string SemestreTurma { get; set; }
     }
 
     public class CreateTurmaDto

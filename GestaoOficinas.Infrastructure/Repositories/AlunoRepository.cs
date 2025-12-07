@@ -30,6 +30,12 @@ namespace GestaoOficinas.Infrastructure.Repositories
         {
             return await _context.Alunos.AsNoTracking().ToListAsync();
         }
+        public async Task<IEnumerable<Aluno>> GetAllWithTurmaAsync()
+        {
+            return await _context.Alunos
+                                 .Include(a => a.Turma)
+                                 .ToListAsync();
+        }
 
         public async Task<Aluno> GetByIdAsync(int id)
         {

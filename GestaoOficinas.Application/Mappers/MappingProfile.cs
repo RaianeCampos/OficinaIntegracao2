@@ -17,11 +17,15 @@ namespace GestaoOficinas.Application.Mappers
             CreateMap<Professor, ProfessorViewModel>();
             CreateMap<CreateProfessorDto, Professor>();
             CreateMap<UpdateProfessorDto, Professor>();
+            CreateMap<Professor, ProfessorViewModel>()
+                     .ForMember(dest => dest.NomeEscola, opt => opt.MapFrom(src => src.Escola.NomeEscola));
 
             // Aluno
             CreateMap<Aluno, AlunoViewModel>();
             CreateMap<CreateAlunoDto, Aluno>();
             CreateMap<UpdateAlunoDto, Aluno>();
+            CreateMap<Aluno, AlunoViewModel>()
+                .ForMember(dest => dest.NomeTurma, opt => opt.MapFrom(src => src.Turma.NomeTurma));
 
             // Oficina
             CreateMap<Oficina, OficinaViewModel>()

@@ -20,6 +20,8 @@ namespace GestaoOficinas.Application.Services
         public async Task<AlunoViewModel> CreateAsync(CreateAlunoDto dto)
         {
             var aluno = _mapper.Map<Aluno>(dto);
+            aluno.NascimentoAluno = DateTime.SpecifyKind(aluno.NascimentoAluno, DateTimeKind.Utc);
+
             await _repository.AddAsync(aluno);
             return _mapper.Map<AlunoViewModel>(aluno);
         }
@@ -33,7 +35,7 @@ namespace GestaoOficinas.Application.Services
 
         public async Task<IEnumerable<AlunoViewModel>> GetAllAsync()
         {
-            var alunos = await _repository.GetAllAsync();
+            var alunos = await _repository.GetAllWithTurmaAsync();
             return _mapper.Map<IEnumerable<AlunoViewModel>>(alunos);
         }
 
@@ -49,6 +51,9 @@ namespace GestaoOficinas.Application.Services
             if (aluno == null) throw new KeyNotFoundException("Aluno não encontrado.");
 
             _mapper.Map(dto, aluno);
+
+            aluno.NascimentoAluno = DateTime.SpecifyKind(aluno.NascimentoAluno, DateTimeKind.Utc);
+
             await _repository.UpdateAsync(aluno);
         }
     }

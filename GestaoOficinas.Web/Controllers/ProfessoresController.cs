@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GestaoOficinas.Application.DTOs;
 using System.Net.Http.Headers;
+using GestaoOficinas.Web.Models;
 using System.Text.Json;
 
 namespace GestaoOficinas.Web.Controllers
@@ -42,7 +43,7 @@ namespace GestaoOficinas.Web.Controllers
             }
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string busca, int pagina = 1)
         {
             var client = CreateClientWithToken();
             try
@@ -50,19 +51,41 @@ namespace GestaoOficinas.Web.Controllers
                 var response = await client.GetAsync("api/professores");
                 if (response.IsSuccessStatusCode)
                 {
-                    var lista = await response.Content.ReadFromJsonAsync<List<ProfessorViewModel>>();
-                    return View(lista);
+                    var todosProfessores = await response.Content.ReadFromJsonAsync<List<ProfessorViewModel>>();
+
+                    if (!string.IsNullOrEmpty(busca))
+                    {
+                        todosProfessores = todosProfessores.Where(p =>
+                            (p.NomeProfessor ?? "").Contains(busca, StringComparison.OrdinalIgnoreCase) ||
+                            (p.EmailProfessor ?? "").Contains(busca, StringComparison.OrdinalIgnoreCase)
+                        ).ToList();
+                    }
+
+                    int tamanhoPagina = 10;
+                    var count = todosProfessores.Count;
+                    var items = todosProfessores.Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
+
+                    var model = new ProfessorListViewModel
+                    {
+                        Professores = items,
+                        TermoBusca = busca,
+                        PaginaAtual = pagina,
+                        TotalPaginas = (int)Math.Ceiling(count / (double)tamanhoPagina)
+                    };
+
+                    return View(model);
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     return RedirectToAction("Login", "Auth");
                 }
             }
-            catch { 
-            
+            catch
+            {
+
             }
 
-            return View(new List<ProfessorViewModel>());
+            return View(new ProfessorListViewModel());
         }
 
         public async Task<IActionResult> Create()
@@ -78,6 +101,13 @@ namespace GestaoOficinas.Web.Controllers
             if (!ModelState.IsValid)
             {
                 await CarregarEscolasViewBag();
+
+                var erros = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var erro in erros)
+                {
+                    Console.WriteLine($"ERRO DE VALIDAÇÃO: {erro.ErrorMessage} - Exception: {erro.Exception}");
+                }
+
                 return View(professor);
             }
 
@@ -94,7 +124,6 @@ namespace GestaoOficinas.Web.Controllers
             return View(professor);
         }
 
-      
         public async Task<IActionResult> Edit(int id)
         {
             var client = CreateClientWithToken();
@@ -102,9 +131,24 @@ namespace GestaoOficinas.Web.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                var professorViewModel = await response.Content.ReadFromJsonAsync<ProfessorViewModel>();
+                var viewModel = await response.Content.ReadFromJsonAsync<ProfessorViewModel>();
+
+                var updateDto = new UpdateProfessorDto
+                {
+                    IdProfessor = viewModel.IdProfessor,
+                    NomeProfessor = viewModel.NomeProfessor,
+                    EmailProfessor = viewModel.EmailProfessor,
+                    TelefoneProfessor = viewModel.TelefoneProfessor,
+                    CargoProfessor = viewModel.CargoProfessor,
+                    ConhecimentoProfessor = viewModel.ConhecimentoProfessor,
+                    IdEscola = viewModel.IdEscola,
+                    Representante = viewModel.Representante,
+                    Administrador = viewModel.Administrador
+                };
+
                 await CarregarEscolasViewBag();
-                return View(professorViewModel);
+
+                return View(updateDto);
             }
 
             return NotFound();

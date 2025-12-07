@@ -103,7 +103,20 @@ namespace GestaoOficinas.Web.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var escolaViewModel = await response.Content.ReadFromJsonAsync<EscolaViewModel>();
-                return View(escolaViewModel);
+
+                var updateDto = new UpdateEscolaDto
+                {
+                    IdEscola = escolaViewModel.IdEscola,
+                    NomeEscola = escolaViewModel.NomeEscola,
+                    CnpjEscola = escolaViewModel.CnpjEscola,
+                    EmailEscola = escolaViewModel.EmailEscola,
+                    TelefoneEscola = escolaViewModel.TelefoneEscola,
+                    CepEscola = escolaViewModel.CepEscola,
+                    RuaEscola = escolaViewModel.RuaEscola,
+                    ComplementoEscola = escolaViewModel.ComplementoEscola
+                };
+
+                return View(updateDto);
             }
 
             return NotFound();

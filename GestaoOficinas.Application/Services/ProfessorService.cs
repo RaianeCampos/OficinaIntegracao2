@@ -33,7 +33,7 @@ namespace GestaoOficinas.Application.Services
 
         public async Task<IEnumerable<ProfessorViewModel>> GetAllAsync()
         {
-            var professores = await _repository.GetAllAsync();
+            var professores = await _repository.GetAllWithEscolaAsync();
             return _mapper.Map<IEnumerable<ProfessorViewModel>>(professores);
         }
 

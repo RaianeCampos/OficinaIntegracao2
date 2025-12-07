@@ -1,0 +1,64 @@
+﻿@model GestaoOficinas.Application.DTOs.UpdateAlunoDto
+@{
+    ViewData["Title"] = "Editar Aluno";
+}
+
+<div class="container-fluid">
+    <h2 class="text-primary mb-4"><i class="fa-solid fa-pen-to-square me-2"></i>Editar Aluno</h2>
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <form asp-action="Edit" asp-route-id="@ViewBag.IdAluno">
+                <input type="hidden" name="id" value="@ViewBag.IdAluno" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="NomeAluno" class="form-label">Nome Completo</label>
+                        <input asp-for="NomeAluno" class="form-control" />
+                        <span asp-validation-for="NomeAluno" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EmailAluno" class="form-label">E-mail</label>
+                        <input asp-for="EmailAluno" class="form-control" type="email" />
+                        <span asp-validation-for="EmailAluno" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="RaAluno" class="form-label">RA</label>
+                        <input asp-for="RaAluno" class="form-control" />
+                        <span asp-validation-for="RaAluno" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="TelefoneAluno" class="form-label">Telefone</label>
+                        <input asp-for="TelefoneAluno" class="form-control phone-mask" />
+                        <span asp-validation-for="TelefoneAluno" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="NascimentoAluno" class="form-label">Data de Nascimento</label>
+                        <input asp-for="NascimentoAluno" class="form-control" type="date" />
+                        <span asp-validation-for="NascimentoAluno" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="IdTurma" class="form-label">Turma</label>
+                    <select asp-for="IdTurma" asp-items="ViewBag.ListaTurmas" class="form-select">
+                        <option value="">Selecione uma turma...</option>
+                    </select>
+                    <span asp-validation-for="IdTurma" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/jquery.mask.min.js"></script>
+    <script>$(document).ready(function(){ $('.phone-mask').mask('(00) 00000-0000'); });</script>
+}

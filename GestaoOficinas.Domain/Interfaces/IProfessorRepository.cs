@@ -6,6 +6,7 @@ namespace GestaoOficinas.Domain.Interfaces
     {
         Task<Professor> GetByIdAsync(int id);
         Task<IEnumerable<Professor>> GetAllAsync();
+        Task<IEnumerable<Professor>> GetAllWithEscolaAsync();
         Task AddAsync(Professor professor);
         Task UpdateAsync(Professor professor);
         Task DeleteAsync(int id);

@@ -7,6 +7,9 @@
         public string EmailAluno { get; set; }
         public string RaAluno { get; set; }
         public int IdTurma { get; set; }
+        public string? NomeTurma { get; set; }
+        public string TelefoneAluno { get; set; }
+        public DateTime NascimentoAluno { get; set; }
     }
 
     public class CreateAlunoDto

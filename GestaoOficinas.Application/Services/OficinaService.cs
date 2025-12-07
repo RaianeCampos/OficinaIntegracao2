@@ -20,6 +20,9 @@ namespace GestaoOficinas.Application.Services
         public async Task<OficinaViewModel> CreateAsync(CreateOficinaDto dto)
         {
             var oficina = _mapper.Map<Oficina>(dto);
+
+            oficina.DataOficina = DateTime.SpecifyKind(oficina.DataOficina, DateTimeKind.Utc);
+
             await _repository.AddAsync(oficina);
             return _mapper.Map<OficinaViewModel>(oficina);
         }
@@ -49,6 +52,9 @@ namespace GestaoOficinas.Application.Services
             if (oficina == null) throw new KeyNotFoundException("Oficina não encontrada.");
 
             _mapper.Map(dto, oficina);
+
+            oficina.DataOficina = DateTime.SpecifyKind(oficina.DataOficina, DateTimeKind.Utc);
+
             await _repository.UpdateAsync(oficina);
         }
     }

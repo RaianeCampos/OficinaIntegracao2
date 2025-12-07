@@ -3,6 +3,7 @@ using System;
 using GestaoOficinas.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GestaoOficinas.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251206231106_AdicionarColunaAdministradorEmProfessor")]
+    partial class AdicionarColunaAdministradorEmProfessor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,16 +267,18 @@ namespace GestaoOficinas.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("CargoProfessor")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ConhecimentoProfessor")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("EmailProfessor")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("IdEscola")
+                    b.Property<int>("IdEscola")
                         .HasColumnType("integer");
 
                     b.Property<string>("NomeProfessor")
@@ -441,7 +446,9 @@ namespace GestaoOficinas.Infrastructure.Migrations
                 {
                     b.HasOne("GestaoOficinas.Domain.Entities.Escola", "Escola")
                         .WithMany("Professores")
-                        .HasForeignKey("IdEscola");
+                        .HasForeignKey("IdEscola")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Escola");
                 });
