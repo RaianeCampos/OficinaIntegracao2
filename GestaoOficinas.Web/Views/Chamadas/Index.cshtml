@@ -1,12 +1,12 @@
-﻿@model IEnumerable<GestaoOficinas.Application.DTOs.ChamadaViewModel>
+﻿@model IEnumerable<GestaoOficinas.Web.Models.ChamadaResumoViewModel>
 
 @{
-    ViewData["Title"] = "Chamadas / Presença";
+    ViewData["Title"] = "Histórico de Chamadas";
 }
 
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary"><i class="fa-solid fa-list-check me-2"></i>Controle de Presença</h2>
+        <h2 class="text-primary"><i class="fa-solid fa-calendar-check me-2"></i>Histórico de Chamadas</h2>
         <a asp-action="Create" class="btn btn-primary shadow-sm">
             <i class="fa-solid fa-plus me-1"></i> Nova Chamada
         </a>
@@ -20,8 +20,7 @@
                         <tr>
                             <th class="ps-4">Data</th>
                             <th>Turma</th>
-                            <th>Aluno</th>
-                            <th class="text-center">Presente?</th>
+                            <th class="text-center">Presença</th>
                             <th class="text-end pe-4">Ações</th>
                         </tr>
                     </thead>
@@ -31,32 +30,24 @@
                             foreach (var item in Model)
                             {
                                 <tr>
-                                    <td class="ps-4">@item.DataChamada.ToString("dd/MM/yyyy")</td>
-                                    <td>
-                                        <span class="fw-bold text-secondary">@item.NomeTurma</span>
+                                    <td class="ps-4 fw-bold text-secondary">
+                                        @item.DataChamada.ToString("dd/MM/yyyy")
                                     </td>
-                                    <td>@item.NomeAluno</td>
+                                    <td>
+                                        <span class="fw-semibold">@item.NomeTurma</span>
+                                    </td>
                                     <td class="text-center">
-                                        @if (item.Presente)
-                                        {
-                                            <span class="badge bg-success rounded-pill">Sim</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-danger rounded-pill">Não</span>
-                                        }
+                                        <span class="badge bg-light text-dark border">
+                                            @item.TotalPresentes / @item.TotalAlunos Presentes
+                                        </span>
                                     </td>
                                     <td class="text-end pe-4">
-                                        <div class="btn-group" role="group">
-                                            <a asp-action="Edit" asp-route-id="@item.IdChamada" class="btn btn-sm btn-outline-warning" title="Editar">
-                                                <i class="fa-solid fa-pen"></i>
-                                            </a>
-                                            <form asp-action="Delete" asp-route-id="@item.IdChamada" method="post" class="d-inline" onsubmit="return confirm('Excluir este registro?');">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1" title="Excluir">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        <a asp-action="EditGrade"
+                                           asp-route-idTurma="@item.IdTurma"
+                                           asp-route-data="@item.DataChamada.ToString("yyyy-MM-dd")"
+                                           class="btn btn-sm btn-outline-warning" title="Editar Pauta">
+                                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                                        </a>
                                     </td>
                                 </tr>
                             }
@@ -64,9 +55,8 @@
                         else
                         {
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="fa-solid fa-clipboard-list fa-2x mb-3 d-block"></i>
-                                    Nenhum registro de chamada encontrado.
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    Nenhuma chamada registrada.
                                 </td>
                             </tr>
                         }

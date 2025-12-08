@@ -49,6 +49,25 @@ namespace GestaoOficinas.API.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CreateChamadaDto dto)
+        {
+            try
+            {
+                // Vamos reutilizar o CreateChamadaDto pois os campos são os mesmos
+                await _chamadaService.UpdateAsync(id, dto);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

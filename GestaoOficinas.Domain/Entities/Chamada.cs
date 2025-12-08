@@ -17,5 +17,6 @@ namespace GestaoOficinas.Domain.Entities
 
         [ForeignKey("IdAluno")]
         public virtual Aluno Aluno { get; set; }
+        public bool Presente { get; set; }
     }
 }

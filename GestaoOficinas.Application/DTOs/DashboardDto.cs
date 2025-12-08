@@ -6,6 +6,6 @@
         public int TotalProfessores { get; set; }
         public int TotalAlunos { get; set; }
         public int TotalOficinas { get; set; }
-        public int TotalOficinasEmAndamento { get; set; }
+        public int TotalOficinasAtivas { get; set; }
     }
 }

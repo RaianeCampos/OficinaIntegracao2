@@ -36,7 +36,17 @@ namespace GestaoOficinas.Application.Services
             var chamadas = await _repository.GetAllAsync();
             return _mapper.Map<IEnumerable<ChamadaViewModel>>(chamadas);
         }
+        public async Task UpdateAsync(int id, CreateChamadaDto dto)
+        {
+            var chamada = await _repository.GetByIdAsync(id);
+            if (chamada == null) throw new KeyNotFoundException("Chamada não encontrada.");
 
+            _mapper.Map(dto, chamada);
+
+            chamada.DataChamada = DateTime.SpecifyKind(chamada.DataChamada, DateTimeKind.Utc);
+
+            await _repository.UpdateAsync(chamada);
+        }
         public async Task<ChamadaViewModel> GetByIdAsync(int id)
         {
             var chamada = await _repository.GetByIdAsync(id);

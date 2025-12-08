@@ -61,51 +61,115 @@ namespace GestaoOficinas.Web.Controllers
             var client = CreateClientWithToken();
             try
             {
+                // 1. Busca TUDO da API (lista plana)
                 var response = await client.GetAsync("api/chamadas");
+
                 if (response.IsSuccessStatusCode)
                 {
-                    var lista = await response.Content.ReadFromJsonAsync<List<ChamadaViewModel>>();
-                    return View(lista);
+                    var listaPlana = await response.Content.ReadFromJsonAsync<List<ChamadaViewModel>>();
+
+                    // 2. AGRUPA por Data e Turma
+                    var listaAgrupada = listaPlana
+                        .GroupBy(c => new { c.DataChamada.Date, c.IdTurma, c.NomeTurma })
+                        .Select(g => new ChamadaResumoViewModel
+                        {
+                            DataChamada = g.Key.Date,
+                            IdTurma = g.Key.IdTurma,
+                            NomeTurma = g.Key.NomeTurma ?? "Turma " + g.Key.IdTurma,
+                            TotalAlunos = g.Count(),
+                            TotalPresentes = g.Count(x => x.Presente)
+                        })
+                        .OrderByDescending(x => x.DataChamada)
+                        .ToList();
+
+                    return View(listaAgrupada);
                 }
-                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     return RedirectToAction("Login", "Auth");
                 }
             }
             catch { }
 
-            return View(new List<ChamadaViewModel>());
+            return View(new List<ChamadaResumoViewModel>());
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? idTurma, DateTime? data)
         {
             await CarregarTurmasViewBag();
-            await CarregarAlunosViewBag(); 
-            return View(new CreateChamadaDto { DataChamada = DateTime.UtcNow.Date });
+
+            var model = new RegistroChamadaViewModel
+            {
+                DataChamada = data ?? DateTime.Now,
+                IdTurma = idTurma ?? 0
+            };
+
+            if (idTurma != null && idTurma > 0)
+            {
+                var client = CreateClientWithToken();
+
+                var response = await client.GetAsync("api/alunos");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var todosAlunos = await response.Content.ReadFromJsonAsync<List<AlunoViewModel>>();
+
+                    var alunosDaTurma = todosAlunos
+                        .Where(a => a.TurmaIds != null && a.TurmaIds.Contains(idTurma.Value))
+                        .ToList();
+
+                    model.Alunos = alunosDaTurma.Select(a => new AlunoPresencaItem
+                    {
+                        IdAluno = a.IdAluno,
+                        NomeAluno = a.NomeAluno,
+                        RaAluno = a.RaAluno,
+                        Presente = true 
+                    }).ToList();
+                }
+            }
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateChamadaDto chamada)
+        public async Task<IActionResult> Create(RegistroChamadaViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (model.IdTurma == 0 || model.Alunos == null || !model.Alunos.Any())
             {
+                ModelState.AddModelError("", "Selecione uma turma com alunos.");
                 await CarregarTurmasViewBag();
-                await CarregarAlunosViewBag();
-                return View(chamada);
+                return View(model);
             }
 
             var client = CreateClientWithToken();
-            var response = await client.PostAsJsonAsync("api/chamadas", chamada);
+            bool houveErro = false;
 
-            if (response.IsSuccessStatusCode)
+            foreach (var item in model.Alunos)
+            {
+                var chamadaDto = new CreateChamadaDto
+                {
+                    IdTurma = model.IdTurma,
+                    IdAluno = item.IdAluno,
+                    
+                    DataChamada = DateTime.SpecifyKind(model.DataChamada, DateTimeKind.Utc),
+                    Presente = item.Presente
+                };
+
+                var response = await client.PostAsJsonAsync("api/chamadas", chamadaDto);
+                if (!response.IsSuccessStatusCode) houveErro = true;
+            }
+
+            if (!houveErro)
             {
                 return RedirectToAction(nameof(Index));
             }
-
-            await CarregarTurmasViewBag();
-            ModelState.AddModelError("", "Erro ao cadastrar chamada. Verifique os dados.");
-            return View(chamada);
+            else
+            {
+                ModelState.AddModelError("", "Houve um erro ao salvar algumas presenças.");
+                await CarregarTurmasViewBag();
+                return View(model);
+            }
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -189,27 +253,98 @@ namespace GestaoOficinas.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> EditGrade(int idTurma, DateTime data)
+        {
+            var client = CreateClientWithToken();
+            var model = new RegistroChamadaViewModel
+            {
+                IdTurma = idTurma,
+                DataChamada = data
+            };
+
+            var respTurma = await client.GetAsync($"api/turmas/{idTurma}");
+            if (respTurma.IsSuccessStatusCode)
+            {
+                var turma = await respTurma.Content.ReadFromJsonAsync<TurmaViewModel>();
+                model.NomeTurma = turma.NomeTurma;
+            }
+
+            var respAlunos = await client.GetAsync("api/alunos");
+            var respChamadas = await client.GetAsync("api/chamadas");
+
+            if (respAlunos.IsSuccessStatusCode && respChamadas.IsSuccessStatusCode)
+            {
+                var todosAlunos = await respAlunos.Content.ReadFromJsonAsync<List<AlunoViewModel>>();
+                var todasChamadas = await respChamadas.Content.ReadFromJsonAsync<List<ChamadaViewModel>>();
+
+                var alunosDaTurma = todosAlunos
+                    .Where(a => a.TurmaIds != null && a.TurmaIds.Contains(idTurma))
+                    .ToList();
+
+                var chamadasDoDia = todasChamadas
+                    .Where(c => c.IdTurma == idTurma && c.DataChamada.Date == data.Date)
+                    .ToList();
+
+                model.Alunos = alunosDaTurma.Select(aluno => {
+                    var chamadaExistente = chamadasDoDia.FirstOrDefault(c => c.IdAluno == aluno.IdAluno);
+
+                    return new AlunoPresencaItem
+                    {
+                        IdAluno = aluno.IdAluno,
+                        NomeAluno = aluno.NomeAluno,
+                        RaAluno = aluno.RaAluno,
+                        Presente = chamadaExistente != null ? chamadaExistente.Presente : false
+                    };
+                }).ToList();
+            }
+
+            return View("Grade", model); 
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SalvarGrade(RegistroChamadaViewModel model)
         {
             var client = CreateClientWithToken();
+            var respChamadas = await client.GetAsync("api/chamadas");
+            var todasChamadas = await respChamadas.Content.ReadFromJsonAsync<List<ChamadaViewModel>>();
+            var chamadasExistentes = todasChamadas
+                .Where(c => c.IdTurma == model.IdTurma && c.DataChamada.Date == model.DataChamada.Date)
+                .ToList();
 
             foreach (var item in model.Alunos)
             {
-                var chamadaDto = new CreateChamadaDto
-                {
-                    IdTurma = model.IdTurma,
-                    IdAluno = item.IdAluno,
-                    DataChamada = model.DataChamada, 
-                    Presente = item.Presente
-                };
+                var registroExistente = chamadasExistentes.FirstOrDefault(c => c.IdAluno == item.IdAluno);
 
-                await client.PostAsJsonAsync("api/chamadas", chamadaDto);
+                if (registroExistente != null)
+                {
+                    var updateDto = new CreateChamadaDto 
+                    {
+                        IdTurma = model.IdTurma,
+                        IdAluno = item.IdAluno,
+                        DataChamada = DateTime.SpecifyKind(model.DataChamada, DateTimeKind.Utc),
+                        Presente = item.Presente
+                    };
+                    await client.PutAsJsonAsync($"api/chamadas/{registroExistente.IdChamada}", updateDto);
+                }
+                else
+                {
+                   
+                    var createDto = new CreateChamadaDto
+                    {
+                        IdTurma = model.IdTurma,
+                        IdAluno = item.IdAluno,
+                        DataChamada = DateTime.SpecifyKind(model.DataChamada, DateTimeKind.Utc),
+                        Presente = item.Presente
+                    };
+                    await client.PostAsJsonAsync("api/chamadas", createDto);
+                }
             }
 
             return RedirectToAction(nameof(Index));
         }
+
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

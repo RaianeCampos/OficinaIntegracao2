@@ -22,17 +22,16 @@ namespace GestaoOficinas.Application.Services
             var totalEscolas = await _context.Escolas.CountAsync();
             var totalProfessores = await _context.Professores.CountAsync();
             var totalAlunos = await _context.Alunos.CountAsync();
-            var totalOficinas = await _context.Oficinas.CountAsync();
-            var totalOficinasEmAndamento = await _context.Oficinas
-                .CountAsync(o => o.StatusOficina == "Em Andamento");
+            var totalOficinasAtivas = await _context.Oficinas
+                    .Where(o => o.StatusOficina == "Ativa")
+                    .CountAsync();
 
             return new DashboardDto
             {
                 TotalEscolas = totalEscolas,
                 TotalProfessores = totalProfessores,
                 TotalAlunos = totalAlunos,
-                TotalOficinas = totalOficinas,
-                TotalOficinasEmAndamento = totalOficinasEmAndamento
+                TotalOficinasAtivas = totalOficinasAtivas
             };
         }
     }

@@ -23,6 +23,11 @@ namespace GestaoOficinas.Application.Services
 
             oficina.DataOficina = DateTime.SpecifyKind(oficina.DataOficina, DateTimeKind.Utc);
 
+            if (string.IsNullOrEmpty(oficina.StatusOficina))
+            {
+                oficina.StatusOficina = "Em Andamento";
+            }
+
             await _repository.AddAsync(oficina);
             return _mapper.Map<OficinaViewModel>(oficina);
         }

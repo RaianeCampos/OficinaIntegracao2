@@ -7,6 +7,7 @@ namespace GestaoOficinas.Application.Interfaces
         Task<ChamadaViewModel> GetByIdAsync(int id);
         Task<IEnumerable<ChamadaViewModel>> GetAllAsync();
         Task<ChamadaViewModel> CreateAsync(CreateChamadaDto dto);
+        Task UpdateAsync(int id, CreateChamadaDto dto);
         Task DeleteAsync(int id);
     }
 }
