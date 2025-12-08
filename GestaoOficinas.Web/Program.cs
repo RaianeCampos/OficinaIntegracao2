@@ -8,6 +8,7 @@ builder.Services.AddHttpClient("OficinasAPI", client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 
 var app = builder.Build();

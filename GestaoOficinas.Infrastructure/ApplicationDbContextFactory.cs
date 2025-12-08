@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using GestaoOficinas.Infrastructure.Persistence; // Ajuste este namespace, se necessário
+using GestaoOficinas.Infrastructure.Persistence; 
 
 public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
 {
@@ -8,7 +8,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
     {
         
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=GestaoOficinasDb;Username=postgres;Password=R@i210613");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=GestaoOficinasDb;Username=postgres;Password=AQUISUASENHA");
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }
