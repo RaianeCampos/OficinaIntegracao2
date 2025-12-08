@@ -74,3 +74,18 @@ body {
     background-color: var(--prussian-blue);
     color: white;
 }
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background-color: white !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+    }
+}

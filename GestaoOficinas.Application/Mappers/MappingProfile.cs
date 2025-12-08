@@ -63,8 +63,11 @@ namespace GestaoOficinas.Application.Mappers
 
             // Documento
             CreateMap<Documento, DocumentoViewModel>()
-                .ForMember(dest => dest.NomeOficina,
-                           opt => opt.MapFrom(src => src.Oficina.NomeOficina));
+                 .ForMember(dest => dest.NomeOficina, opt => opt.MapFrom(src => src.Oficina.NomeOficina))
+                 .ForMember(dest => dest.NomeProfessor, opt => opt.MapFrom(src => src.Professor.NomeProfessor))
+                 .ForMember(dest => dest.NomeAluno, opt => opt.MapFrom(src => src.Aluno != null ? src.Aluno.NomeAluno : "N/A"))
+                 .ForMember(dest => dest.NomeEscola, opt => opt.MapFrom(src => src.Escola != null ? src.Escola.NomeEscola : "N/A"));
+
             CreateMap<CreateDocumentoDto, Documento>();
             CreateMap<UpdateDocumentoDto, Documento>();
 

@@ -1,81 +1,75 @@
-﻿@model GestaoOficinas.Application.DTOs.DocumentoViewModel
-<!-- model GestaoOficinas.Web.Models.DocumentoListViewModel -->
-
+﻿@model IEnumerable<GestaoOficinas.Application.DTOs.DocumentoViewModel>
 
 @{
-	ViewData["Title"] = "Documentos";
+    ViewData["Title"] = "Documentos";
 }
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary"><i class="fa-solid fa-file-lines me-2"></i>Documentos</h2>
-        <a asp-action="Create" class="btn btn-primary shadow-sm">
-            <i class="fa-solid fa-plus me-1"></i> Novo Documento
-        </a>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary"><i class="fa-solid fa-file-contract me-2"></i>Documentos Gerados</h2>
+    <a asp-action="Create" class="btn btn-primary shadow-sm">
+        <i class="fa-solid fa-plus me-1"></i> Novo Documento
+    </a>
+</div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th class="ps-4">Tipo</th>
-                            <th>Oficina</th>
-                            <th>Emissão</th>
-                            <th class="text-center">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>  <!-- 
-                        @if (Model != null && Model.Any()) 
-                        {
-                            foreach ( var item in Model)
-                            {
-                                <tr> --> 
-                                    <td class="ps-4 fw-bold text-secondary">@item.TipoDocumento</td>
-                                    <td>
-                                        <div class="small text-muted">@item.NomeOficina</div>
-                                        <div class="small">@item.TemaOficina</div>
-                                    </td>
-                                    <td>
-                                        @item.Emissao.ToLocalTime().ToString("dd/MM/yyyy")
-                                    </td>
-                                    <td class="text-center">
-                                        @{
-                                            var statusClass = item.StatusDocumento switch
-                                            {
-                                                "Gerado" => "bg-info text-dark",
-                                                "Emitido" => "bg-success",
-                                                "Cancelado" => "bg-danger",
-                                                "Pendente" => "bg-warning text-dark",
-                                                _ => "bg-secondary"
-                                            };
-                                        }
-                                        <span class="badge @statusClass rounded-pill">@item.StatusDocumento</span>
-                                    </td>
-                                    <td class="text-end pe-4">
-                                        <div class="btn-group" role="group">
-                                            <a asp-action="Edit" asp-route-id="@item.IdDocumento" class="btn btn-sm btn-outline-warning" title="Editar">
-                                                <i class="fa-solid fa-pen"></i>
-                                            </a>
-
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="text-white" style="background-color: #13293D;">
+                    <tr>
+                        <th class="ps-4">Tipo</th>
+                        <th>Emissão</th>
+                        <th>Oficina</th>
+                        <th>Emitido Por</th>
+                        <th>Destinatário</th>
+                        <th class="text-end pe-4">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
                         {
                             <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="fa-solid fa-folder-open fa-2x mb-3 d-block"></i>
-                                    Nenhum documento encontrado.
+                                <td class="ps-4">
+                                    <span class="badge bg-secondary">@item.TipoDocumento</span>
+                                </td>
+                                <td>@item.Emissao.ToString("dd/MM/yyyy")</td>
+                                <td>@item.NomeOficina</td>
+                                <td>@item.NomeProfessor</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.NomeAluno))
+                                    {
+                                        <small class="text-muted d-block">Aluno:</small> 
+                                        @item.NomeAluno
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.NomeEscola))
+                                    {
+                                        <small class="text-muted d-block">Escola:</small> 
+                                        @item.NomeEscola
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.IdDocumento" class="btn btn-sm btn-info text-white" title="Visualizar">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.IdDocumento" method="post" class="d-inline" onsubmit="return confirm('Excluir documento?');">
+                                            <button type="submit" class="btn btn-sm btn-danger ms-1" title="Excluir">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                    else
+                    {
+                        <tr><td colspan="6" class="text-center py-5 text-muted">Nenhum documento encontrado.</td></tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

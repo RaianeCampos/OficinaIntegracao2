@@ -1,62 +1,108 @@
 ﻿@model GestaoOficinas.Application.DTOs.CreateDocumentoDto
 
 @{
-    ViewData["Title"] = "Novo Documento";
+    ViewData["Title"] = "Gerar Documento";
 }
 
 <div class="container-fluid">
-    <h2 class="text-primary mb-4"><i class="fa-solid fa-shapes me-2"></i>Novo Documento</h2>
+    <h2 class="text-primary mb-4"><i class="fa-solid fa-file-signature me-2"></i>Gerar Novo Documento</h2>
 
     <div class="card shadow-sm">
         <div class="card-body p-4">
             <form asp-action="Create">
-                <div class="row">
-                    <div class="col-md-8 mb-3">
-                        <label asp-for="NomeOficina" class="form-label">Nome da Oficina</label>
-                        <input asp-for="NomeOficina" class="form-control" placeholder="Ex: Robótica Básica" />
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label asp-for="TemaOficina" class="form-label">Tema</label>
-                        <input asp-for="TemaOficina" class="form-control" placeholder="Ex: Tecnologia" />
-                    </div>
-                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="row">
-					<!-- Verificar se precisa desses campos no documento, se sim atualziar DTOs
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="CargaHorariaOficinia" class="form-label">Carga Horária (h)</label>
-                        <input asp-for="CargaHorariaOficinia" type="number" class="form-control" />
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="DataOficina" class="form-label">Data de Início</label>
-                        <input asp-for="DataOficina" type="date" class="form-control" />
-                    </div>
-                    -->
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="StatusDocumento" class="form-label">Status</label>
-                        <select asp-for="StatusDocumento" class="form-select">
-                            <option value="Em Andamento">Em Andamento</option>
-                            <option value="Planejamento">Planejamento</option>
-                            <option value="Concluída">Concluída</option>
-                            <option value="Certificado">Certificado</option>
-                            <option value="Convite">Convite</option>
-                            <option value="Convenio">Convenio</option>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="TipoDocumento" class="form-label fw-bold">Tipo de Documento</label>
+                        <select asp-for="TipoDocumento" class="form-select" id="selectTipo">
+                            <option value="">-- Selecione o Tipo --</option>
+                            <option value="Convite">Carta Convite</option>
+                            <option value="Certificado">Certificado de Conclusão</option>
+                            <option value="Convenio">Termo de Convênio</option>
                         </select>
+                        <span asp-validation-for="TipoDocumento" class="text-danger"></span>
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="IdProfessor" class="form-label">Professor Responsável</label>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="IdProfessor" class="form-label">Professor Emissor</label>
                         <select asp-for="IdProfessor" asp-items="ViewBag.ListaProfessores" class="form-select">
                             <option value="">Selecione...</option>
                         </select>
                         <span asp-validation-for="IdProfessor" class="text-danger"></span>
                     </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="IdOficina" class="form-label">Oficina Relacionada</label>
+                        <select asp-for="IdOficina" asp-items="ViewBag.ListaOficinas" class="form-select">
+                            <option value="">Selecione...</option>
+                        </select>
+                        <span asp-validation-for="IdOficina" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr class="my-3 text-muted" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3" id="divAluno" style="display:none;">
+                        <label asp-for="IdAluno" class="form-label text-success fw-bold">Aluno Beneficiário</label>
+                        <select asp-for="IdAluno" asp-items="ViewBag.ListaAlunos" class="form-select">
+                            <option value="">Selecione o Aluno...</option>
+                        </select>
+                        <small class="text-muted">Obrigatório para Certificados.</small>
+                    </div>
+
+                    <div class="col-md-6 mb-3" id="divEscola" style="display:none;">
+                        <label asp-for="IdEscola" class="form-label text-primary fw-bold">Escola Parceira</label>
+                        <select asp-for="IdEscola" asp-items="ViewBag.ListaEscolas" class="form-select">
+                            <option value="">Selecione a Escola...</option>
+                        </select>
+                        <small class="text-muted">Obrigatório para Convênios.</small>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <i class="fa-solid fa-info-circle me-2"></i>
+                    O conteúdo do documento será gerado automaticamente com base nas informações acima.
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 gap-2">
                     <a asp-action="Index" class="btn btn-secondary">Voltar</a>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Gerar Documento
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            function alternarCampos() {
+                var tipo = $("#selectTipo").val();
+
+                $("#divAluno").hide();
+                $("#divEscola").hide();
+
+                if (tipo === "Certificado") {
+                    $("#divAluno").fadeIn();
+                    $("#divEscola").fadeIn(); 
+                }
+                else if (tipo === "Convenio") {
+                    $("#divEscola").fadeIn();
+                }
+                else if (tipo === "Convite") {
+                }
+            }
+
+            $("#selectTipo").change(alternarCampos);
+            alternarCampos();
+        });
+    </script>
+}

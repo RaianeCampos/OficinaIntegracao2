@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GestaoOficinas.Application.DTOs;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace GestaoOficinas.Web.Controllers
 {
@@ -17,6 +18,7 @@ namespace GestaoOficinas.Web.Controllers
         private HttpClient CreateClientWithToken()
         {
             var client = _clientFactory.CreateClient("OficinasAPI");
+
             var token = HttpContext.Session.GetString("JWToken");
             if (!string.IsNullOrEmpty(token))
             {
@@ -25,45 +27,52 @@ namespace GestaoOficinas.Web.Controllers
             return client;
         }
 
-        private async Task CarregarListasViewBag()
+        private async Task CarregarViewBags()
         {
             var client = CreateClientWithToken();
+            try
+            {
+                var resp = await client.GetAsync("api/oficinas");
+                if (resp.IsSuccessStatusCode)
+                {
+                    var itens = await resp.Content.ReadFromJsonAsync<List<OficinaViewModel>>();
+                    ViewBag.ListaOficinas = new SelectList(itens, "IdOficina", "NomeOficina");
+                }
+            }
+            catch { ViewBag.ListaOficinas = new SelectList(new List<object>(), "IdOficina", "NomeOficina"); }
 
-            // Oficinas
-            var respOf = await client.GetAsync("api/oficinas");
-            if (respOf.IsSuccessStatusCode)
+            try
             {
-                var oficinas = await respOf.Content.ReadFromJsonAsync<List<OficinaViewModel>>();
-                ViewBag.ListaOficinas = new SelectList(oficinas, "IdOficina", "NomeOficina");
+                var resp = await client.GetAsync("api/professores");
+                if (resp.IsSuccessStatusCode)
+                {
+                    var itens = await resp.Content.ReadFromJsonAsync<List<ProfessorViewModel>>();
+                    ViewBag.ListaProfessores = new SelectList(itens, "IdProfessor", "NomeProfessor");
+                }
             }
-            else
-            {
-                ViewBag.ListaOficinas = new SelectList(new List<OficinaViewModel>(), "IdOficina", "NomeOficina");
-            }
+            catch { ViewBag.ListaProfessores = new SelectList(new List<object>(), "IdProfessor", "NomeProfessor"); }
 
-            // Escolas
-            var respEs = await client.GetAsync("api/escolas");
-            if (respEs.IsSuccessStatusCode)
+            try
             {
-                var escolas = await respEs.Content.ReadFromJsonAsync<List<EscolaViewModel>>();
-                ViewBag.ListaEscolas = new SelectList(escolas, "IdEscola", "NomeEscola");
+                var resp = await client.GetAsync("api/escolas");
+                if (resp.IsSuccessStatusCode)
+                {
+                    var itens = await resp.Content.ReadFromJsonAsync<List<EscolaViewModel>>();
+                    ViewBag.ListaEscolas = new SelectList(itens, "IdEscola", "NomeEscola");
+                }
             }
-            else
-            {
-                ViewBag.ListaEscolas = new SelectList(new List<EscolaViewModel>(), "IdEscola", "NomeEscola");
-            }
+            catch { ViewBag.ListaEscolas = new SelectList(new List<object>(), "IdEscola", "NomeEscola"); }
 
-            // Alunos
-            var respAl = await client.GetAsync("api/alunos");
-            if (respAl.IsSuccessStatusCode)
+            try
             {
-                var alunos = await respAl.Content.ReadFromJsonAsync<List<AlunoViewModel>>();
-                ViewBag.ListaAlunos = new SelectList(alunos, "IdAluno", "NomeAluno");
+                var resp = await client.GetAsync("api/alunos");
+                if (resp.IsSuccessStatusCode)
+                {
+                    var itens = await resp.Content.ReadFromJsonAsync<List<AlunoViewModel>>();
+                    ViewBag.ListaAlunos = new SelectList(itens, "IdAluno", "NomeAluno");
+                }
             }
-            else
-            {
-                ViewBag.ListaAlunos = new SelectList(new List<AlunoViewModel>(), "IdAluno", "NomeAluno");
-            }
+            catch { ViewBag.ListaAlunos = new SelectList(new List<object>(), "IdAluno", "NomeAluno"); }
         }
 
         public async Task<IActionResult> Index()
@@ -87,23 +96,61 @@ namespace GestaoOficinas.Web.Controllers
             return View(new List<DocumentoViewModel>());
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var client = CreateClientWithToken();
+            var response = await client.GetAsync($"api/documentos/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var documento = await response.Content.ReadFromJsonAsync<DocumentoViewModel>();
+                return View(documento);
+            }
+            return NotFound();
+        }
+
         public async Task<IActionResult> Create()
         {
-            await CarregarListasViewBag();
-            return View(new CreateDocumentoDto());
+            await CarregarViewBags();
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateDocumentoDto documento)
         {
+            if (documento.TipoDocumento == "Certificado" && documento.IdAluno == null)
+                ModelState.AddModelError("IdAluno", "Selecione um aluno para o certificado.");
+
+            if (documento.TipoDocumento == "Convenio" && documento.IdEscola == null)
+                ModelState.AddModelError("IdEscola", "Selecione uma escola para o convênio.");
+
+            ModelState.Remove("NomeOficina");
+            ModelState.Remove("TemaOficina");
+
             if (!ModelState.IsValid)
             {
-                await CarregarListasViewBag();
+                await CarregarViewBags();
                 return View(documento);
             }
 
             var client = CreateClientWithToken();
+
+            if (documento.IdOficina > 0)
+            {
+                var responseOficina = await client.GetAsync($"api/oficinas/{documento.IdOficina}");
+                if (responseOficina.IsSuccessStatusCode)
+                {
+                    var oficina = await responseOficina.Content.ReadFromJsonAsync<OficinaViewModel>();
+                    if (oficina != null)
+                    {
+                        documento.NomeOficina = oficina.NomeOficina;
+                        
+                        documento.TemaOficina = "Tema da Oficina " + oficina.NomeOficina; 
+                    }
+                }
+            }
+
             var response = await client.PostAsJsonAsync("api/documentos", documento);
 
             if (response.IsSuccessStatusCode)
@@ -111,46 +158,10 @@ namespace GestaoOficinas.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            await CarregarListasViewBag();
-            ModelState.AddModelError("", "Erro ao cadastrar documento. Verifique os dados.");
-            return View(documento);
-        }
+            var erro = await response.Content.ReadAsStringAsync();
+            ModelState.AddModelError("", $"Erro ao gerar documento: {erro}");
 
-        public async Task<IActionResult> Edit(int id)
-        {
-            var client = CreateClientWithToken();
-            var response = await client.GetAsync($"api/documentos/{id}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var documentoViewModel = await response.Content.ReadFromJsonAsync<DocumentoViewModel>();
-                await CarregarListasViewBag();
-                return View(documentoViewModel);
-            }
-
-            return NotFound();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, UpdateDocumentoDto documento)
-        {
-            if (!ModelState.IsValid)
-            {
-                await CarregarListasViewBag();
-                return View(documento);
-            }
-
-            var client = CreateClientWithToken();
-            var response = await client.PutAsJsonAsync($"api/documentos/{id}", documento);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            await CarregarListasViewBag();
-            ModelState.AddModelError("", "Erro ao atualizar documento.");
+            await CarregarViewBags();
             return View(documento);
         }
 

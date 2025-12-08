@@ -1,0 +1,55 @@
+﻿@model GestaoOficinas.Application.DTOs.DocumentoViewModel
+
+@{
+    ViewData["Title"] = "Visualizar Documento";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+        </a>
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="fa-solid fa-print"></i> Imprimir
+        </button>
+    </div>
+
+    <div class="card shadow-lg mx-auto" style="max-width: 210mm; min-height: 297mm; padding: 20mm;">
+        <div class="card-body d-flex flex-column">
+
+            <div class="text-center mb-5">
+                <h1 class="display-6 fw-bold text-uppercase">@Model.TipoDocumento</h1>
+                <hr class="w-50 mx-auto border-primary border-3 opacity-100">
+                <p class="text-muted">Gestão de Oficinas - Projeto ELLP</p>
+            </div>
+
+            <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                <p class="lead text-center lh-lg" style="white-space: pre-wrap;">
+                    @Model.ResumoConteudo
+                </p>
+            </div>
+
+            <div class="mt-5 pt-5">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-top border-dark w-75 mx-auto pt-2">
+                            <strong>@Model.NomeProfessor</strong><br>
+                            Professor Responsável
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border-top border-dark w-75 mx-auto pt-2">
+                            <strong>Coordenação ELLP</strong><br>
+                            Assinatura Institucional
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center text-muted small mt-5">
+                    Documento gerado em: @Model.Emissao.ToString("dd/MM/yyyy HH:mm") <br>
+                    Código de Validação: #DOC-@Model.IdDocumento
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -36,6 +36,9 @@ namespace GestaoOficinas.Infrastructure.Repositories
         {
             return await _context.Documentos
                 .Include(d => d.Oficina)
+                .Include(d => d.Professor)
+                .Include(d => d.Aluno)
+                .Include(d => d.Escola)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -44,6 +47,9 @@ namespace GestaoOficinas.Infrastructure.Repositories
         {
             return await _context.Documentos
                 .Include(d => d.Oficina)
+                .Include(d => d.Professor)
+                .Include(d => d.Aluno)
+                .Include(d => d.Escola)
                 .FirstOrDefaultAsync(d => d.IdDocumento == id);
         }
 
