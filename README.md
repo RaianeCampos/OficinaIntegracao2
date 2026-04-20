@@ -115,20 +115,20 @@ A Sprint 1 foca na fundação técnica e no CRUD básico do projeto.
 - [x] Review de backlog e correção de problemas.
 - [x] Definição da view de Dashboard/página inicial (criação do endpoint GET /api/dashboard`).
 - [x] **Criar Testes de Integração** (Projeto `.Tests`) com exemplos para todas as entidades.
-- [ ] Entrega da primeira sprint.
-- [ ] Review da sprint.
-- [ ] Atualização de cronograma.
+- [x] Entrega da primeira sprint.
+- [x] Review da sprint.
+- [x] Atualização de cronograma.
 
 ---
 ### Próximos Passos (Planejamento Sprint 2)
 
 O que falta implementar no projeto:
 
-- [ ] **Lógica de Negócio Avançada:**
-    - [ ] Geração do documento de `Certificado` (requer lógica de presença/conclusão).
-    - [ ] Geração do documento de `Convite` (para escolas).
-- [ ] **Validação de DTOs** (Implementar FluentValidation).
-- [ ] **Tratamento de Erros Global** (Middleware para exceções).
-- [ ] **Melhorar Testes de Integração** (Cobrir casos de falha, `PUT` e `DELETE`).
-- [ ] **Definição das Views** (Prototipação do Frontend).
-- [ ] Definição das views de cadastros (planejamento da Sprint 2).
+- [x] **Lógica de Negócio Avançada:**
+    - [x] Geração do documento de `Certificado` (requer lógica de presença/conclusão).
+    - [x] Geração do documento de `Convite` (para escolas).
+- [x] **Validação de DTOs** (Implementar FluentValidation).
+- [x] **Tratamento de Erros Global** (Middleware para exceções).
+- [x] **Melhorar Testes de Integração** (Cobrir casos de falha, `PUT` e `DELETE`).
+- [x] **Definição das Views** (Prototipação do Frontend).
+- [x] Definição das views de cadastros (planejamento da Sprint 2).
